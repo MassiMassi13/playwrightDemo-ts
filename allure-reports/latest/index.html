@@ -1,34 +1,33 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html lang="fr">
+
 <head>
-    <meta charset="utf-8">
-    <title>Allure Report</title>
-    <link rel="icon" href="favicon.ico">
-    <link rel="stylesheet" type="text/css" href="styles.css">
-    <link rel="stylesheet" type="text/css" href="plugin/screen-diff/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playwright Test Report</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://playwright.dev/img/playwright-logo.svg" />
 </head>
-<body>
-    <div id="alert"></div>
-    <div id="content">
-        <span class="spinner">
-            <span class="spinner__circle"></span>
-        </span>
+
+<body class="bg-gray-50 text-gray-800">
+  <div class="min-h-screen flex items-center justify-center px-4">
+    <div class="max-w-2xl w-full text-center space-y-8">
+      <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright Logo" class="w-20 h-20 mx-auto" />
+      <h1 class="text-4xl font-extrabold">Playwright Test Report</h1>
+      <p class="text-lg text-gray-600">
+        Ceci est une interface de visualisation du rapport de tests généré automatiquement à partir de GitHub Actions
+        avec Allure.
+      </p>
+      <a href="./allure-reports/latest/index.html"
+        class="inline-block px-6 py-3 text-white text-lg font-medium bg-purple-600 hover:bg-purple-700 rounded-lg transition">
+        📊 Voir le rapport Allure
+      </a>
+
+      <div class="text-sm text-gray-400 mt-6">
+        &copy; 2025 – Projet Playwright avec CI/CD GitHub Actions
+      </div>
     </div>
-    <div id="popup"></div>
-    <script src="app.js"></script>
-    <script src="plugin/behaviors/index.js"></script>
-    <script src="plugin/packages/index.js"></script>
-    <script src="plugin/screen-diff/index.js"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FVWC4GKEYS"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-FVWC4GKEYS', {
-          'allureVersion': '2.34.0',
-          'reportUuid': 'd25ada04-5e00-4faf-b471-6e1ebd2ad5a5',
-          'single_file': false
-        });
-    </script>
+  </div>
 </body>
+
 </html>

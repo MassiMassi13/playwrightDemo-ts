@@ -1,0 +1,7 @@
+{ gender: 'Female', civility: 'Madame', firstName: 'Patti' }
+Nom généré Par la lib fakers : Turcotte
+🚀 Employé généré :  - Female 
+🔹 Status : Full-Time Contract 
+🔹 Include : Past Employees Only 
+🔹 Job Title : Project Manager 
+🔹 Sub Unit : Engineering
