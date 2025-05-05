@@ -1,0 +1,7 @@
+{ gender: 'Female', civility: 'Madame', firstName: 'Melanie' }
+Nom généré Par la lib fakers : Koepp
+🚀 Employé généré :  - Male 
+🔹 Status : Part-Time Contract 
+🔹 Include : Current and Past Employees 
+🔹 Job Title : QA Lead 
+🔹 Sub Unit : Development
