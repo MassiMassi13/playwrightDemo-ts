@@ -1,0 +1,8 @@
+{ gender: 'Female', civility: 'Madame', firstName: 'Celia' }
+Nom généré Par la lib fakers : Kemmer
+🚀 Employé généré :  - Male 
+🔹 Status : Part-Time Contract 
+🔹 Include : Current and Past Employees 
+🔹 Job Title : QA Lead 
+🔹 Sub Unit : Quality Assurance
+📌 Adresse générée : 146 Stark Lodge, 27474 Hermannberg, FRANCE
