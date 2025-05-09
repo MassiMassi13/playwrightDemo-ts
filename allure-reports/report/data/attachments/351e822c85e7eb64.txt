@@ -1,0 +1,7 @@
+{ gender: 'Male', civility: 'Monsieur', firstName: 'Matt' }
+Nom généré Par la lib fakers : Bogisich
+🚀 Employé généré :  - Male 
+🔹 Status : Part-Time Contract 
+🔹 Include : Current and Past Employees 
+🔹 Job Title : QA Lead 
+🔹 Sub Unit : Quality Assurance
