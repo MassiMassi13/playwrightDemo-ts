@@ -1,2 +1,0 @@
-🎉✨🧨🧨🎇Le nom choisit par la lib Faker est bien le : Tillman ✨✨✨✨✨
-{ gender: 'Female', civility: 'Madame', firstName: 'Inez' }

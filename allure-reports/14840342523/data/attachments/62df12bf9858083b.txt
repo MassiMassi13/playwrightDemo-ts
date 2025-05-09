@@ -1,2 +1,0 @@
-Nouvelle URL: https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
-Retour à la page principale réussi ✅

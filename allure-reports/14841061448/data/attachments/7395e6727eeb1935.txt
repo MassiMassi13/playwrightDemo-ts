@@ -1,7 +1,0 @@
-{ gender: 'Female', civility: 'Madame', firstName: 'Robyn' }
-Nom généré : Predovic-Larkin
-🚀 Employé généré :  - Male 
-🔹 Status : Part-Time Contract 
-🔹 Include : Current and Past Employees 
-🔹 Job Title : QA Engineer 
-🔹 Sub Unit : Engineering
