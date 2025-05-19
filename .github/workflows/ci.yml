@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies (npm + ts-node + typescript)
         run: |
           npm ci
-          npm install --save-dev ts-node typescript
+          npm install ts-node typescript --save-dev
           npm install -g allure-commandline --save-dev
           npx playwright install --with-deps
 

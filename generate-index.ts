@@ -1,60 +1,83 @@
-import fs from "fs";
-import path from "path";
+const fs = require('fs');
+const path = require('path');
 
-// 🔍 Chemin vers le fichier summary.json du rapport Allure
-const summaryPath = path.join("allure-reports", "report", "widgets", "summary.json");
+// Infos statiques
+const allureLatestPath = './allure-reports/latest/index.html';
+const allureReportPath = './allure-reports/report/index.html';
+const outputPath = './public/index.html';
 
-if (!fs.existsSync(summaryPath)) {
-  console.error("❌ summary.json non trouvé :", summaryPath);
-  process.exit(1);
+// Données dynamiques depuis GitHub Actions
+const repoOwner = process.env.GITHUB_REPOSITORY_OWNER || 'utilisateur';
+const repoName = process.env.GITHUB_REPOSITORY?.split('/')[1] || 'nom-du-repo';
+const badgeUrl = `https://github.com/${repoOwner}/${repoName}/actions/workflows/ci.yml/badge.svg`;
+const reportUrl = `https://${repoOwner}.github.io/${repoName}/allure-reports/report/index.html`;
+const homeUrl = `https://${repoOwner}.github.io/${repoName}/allure-reports/latest/index.html`;
+
+// Lecture du résumé Allure si dispo
+let testStats = '';
+const summaryPath = './allure-results/summary.json';
+
+if (fs.existsSync(summaryPath)) {
+  try {
+    const summaryData = JSON.parse(fs.readFileSync(summaryPath, 'utf-8'));
+    const { total, passed, failed, broken, skipped } = summaryData.statistic;
+    testStats = `
+      <ul>
+        <li>✅ Tests Passés : <strong>${passed}</strong></li>
+        <li>❌ Tests Échoués : <strong>${failed}</strong></li>
+        <li>⚠️ Tests Cassés : <strong>${broken}</strong></li>
+        <li>⏭️ Tests Ignorés : <strong>${skipped}</strong></li>
+        <li>📊 Total : <strong>${total}</strong></li>
+      </ul>
+    `;
+  } catch (err) {
+    testStats = '<p>❌ Impossible de lire summary.json</p>';
+  }
+} else {
+  testStats = '<p>ℹ️ Aucune donnée de test disponible</p>';
 }
 
-// 📦 Lecture et parsing du résumé Allure
-const summaryRaw = fs.readFileSync(summaryPath, "utf-8");
-const summary = JSON.parse(summaryRaw);
-
-const {
-  time: { duration },
-  statistic: { total, passed, failed }
-} = summary;
-
-const formatDuration = (ms: number): string => {
-  const minutes = Math.floor(ms / 60000);
-  const seconds = Math.floor((ms % 60000) / 1000);
-  return `${minutes}m ${seconds}s`;
-};
-
-// 🔧 HTML généré
-const html = `
+// HTML final
+const htmlContent = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Rapport Tests Playwright</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard de Tests - Playwright</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f9f9f9; color: #333; }
+    h1 { color: #444; }
+    .badge img { height: 30px; }
+    .stats ul { list-style: none; padding-left: 0; }
+    .stats li { margin: 0.3em 0; }
+    .links a { display: inline-block; margin: 1em 1em 0 0; padding: 0.7em 1.2em; background: #007acc; color: white; text-decoration: none; border-radius: 6px; }
+    .links a:hover { background: #005f99; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800 p-10">
-  <h1 class="text-3xl font-bold text-purple-700 mb-6">✅ Résumé des Tests</h1>
-  <ul class="space-y-2 text-lg">
-    <li><strong>🧪 Total :</strong> ${total}</li>
-    <li><strong>✔ Succès :</strong> ${passed}</li>
-    <li><strong>❌ Échecs :</strong> ${failed}</li>
-    <li><strong>⏱ Durée :</strong> ${formatDuration(duration)}</li>
-    <li><strong>🏃‍♂️ GitHub Runner :</strong> ubuntu-latest</li>
-    <li><strong>📄 Workflow :</strong> <code>.github/workflows/ci.yml</code></li>
-  </ul>
-
-  <div class="mt-8">
-    <a href="./allure-reports/report/index.html" class="text-white bg-purple-600 px-6 py-3 rounded shadow hover:bg-purple-700">
-      📊 Voir le rapport Allure
-    </a>
+<body>
+  <div class="badge">
+    <img src="${badgeUrl}" alt="Statut GitHub Actions" />
   </div>
+  <h1>📋 Tableau de bord des tests Playwright</h1>
+  <section class="stats">
+    <h2>📊 Statistiques des tests</h2>
+    ${testStats}
+  </section>
+  <section class="links">
+    <h2>🔗 Liens utiles</h2>
+    <a href="${reportUrl}" target="_blank">Voir le rapport Allure</a>
+    <a href="${homeUrl}" target="_blank">Voir la dernière version</a>
+  </section>
 </body>
 </html>
 `;
 
-// 📁 Création du dossier public si nécessaire
-fs.mkdirSync("public", { recursive: true });
-fs.writeFileSync("public/index.html", html);
+// Génération du dossier public + fichier index.html
+const publicDir = path.dirname(outputPath);
+if (!fs.existsSync(publicDir)) {
+  fs.mkdirSync(publicDir, { recursive: true });
+}
 
-console.log("✅ Page index.html générée dans ./public");
+fs.writeFileSync(outputPath, htmlContent, 'utf-8');
+console.log(`✅ Page index.html générée dans ${outputPath}`);
