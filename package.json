@@ -5,9 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "test": "playwright test",
-  "report:allure": "allure generate ./allure-results --clean -o ./docs/allure-reports/report",
-  "report:index": "node ./generate-index.cjs",
+    "test": "playwright test",
+  "report:allure": "allure generate ./allure-results --clean -o ./public/allure-reports/report",
+  "report:index": "node generate-index.cjs",
   "report": "npm run report:allure && npm run report:index"
   },
   "keywords": [],

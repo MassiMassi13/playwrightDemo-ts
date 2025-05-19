@@ -1,18 +1,15 @@
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+// generate-index.cjs
 
-// __dirname support
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const fs = require("fs");
+const path = require("path");
 
-// Repo info (utile pour le badge)
+// __dirname est natif en CommonJS
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
-const branch = "main";
+const branch = "main"; // Peut être dynamic si besoin
 
-// 📍 Corrigé : chemin vers le bon fichier summary.json généré par Allure
-const summaryFile = path.join(__dirname, "docs", "allure-reports", "report", "widgets", "summary.json");
+// Lire le summary Allure
+const summaryFile = path.join(__dirname, "allure-results", "summary.json");
 let summary = null;
 
 try {
@@ -24,18 +21,17 @@ try {
   console.warn("⚠️ Impossible de lire summary.json :", error.message);
 }
 
-// Données de test
+// Statistiques de test
 const passed = summary?.statistic?.passed ?? 0;
 const failed = summary?.statistic?.failed ?? 0;
 const skipped = summary?.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
 
-// HTML
+// HTML généré
 const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Rapport de Tests Playwright</title>
   <style>
     body {
@@ -54,12 +50,7 @@ const html = `<!DOCTYPE html>
       width: 100%;
       text-align: center;
     }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
     .badge {
-      display: inline-block;
       margin-bottom: 1rem;
     }
     .stats {
@@ -81,7 +72,7 @@ const html = `<!DOCTYPE html>
 <body>
   <div class="container">
     <div class="badge">
-      <img src="https://img.shields.io/github/actions/workflow/status/${owner}/${name}/tests.yml?branch=${branch}&label=CI%20Status" alt="CI Status" />
+      <img src="https://img.shields.io/github/actions/workflow/status/${owner}/${name}/ci.yml?branch=${branch}&label=CI%20Status" alt="CI Status" />
     </div>
     <h1>🧪 Rapport de Tests</h1>
     ${
@@ -99,8 +90,8 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Génération de l'index dans ./docs/index.html (pour GitHub Pages)
-const outputPath = path.join(__dirname, "docs", "index.html");
+// Écriture dans public/index.html
+const outputPath = path.join(__dirname, "public", "index.html");
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, html, "utf-8");
 

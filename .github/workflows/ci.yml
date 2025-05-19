@@ -13,45 +13,40 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.38.1-focal
 
     steps:
-      # 1. Récupère le code source depuis la branche
-      - name: Checkout code
+      # 1. Checkout du code
+      - name: Checkout
         uses: actions/checkout@v3
 
-      # 2. Installe Java (nécessaire pour Allure CLI)
-      - name: Install Java (for Allure)
+      # 2. Installation Java (pour Allure)
+      - name: Install Java
         run: |
           apt-get update -y
           apt-get install -y default-jdk
           echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
-      # 3. Installe les dépendances Node.js et Allure CLI
-      - name: Install dependencies
+      # 3. Dépendances + CLI Allure
+      - name: Install deps
         run: |
           npm ci
           npm install -g allure-commandline
 
-      # 4. Exécute les tests Playwright (même si certains échouent)
-      - name: Run Playwright tests
-        run: npm run test
+      # 4. Exécution des tests
+      - name: Run tests
+        run: npm test
         continue-on-error: true
 
-      # 5. Génère le rapport Allure dans ./docs/allure-reports/report
-      - name: Generate Allure report
+      # 5. Génération du rapport Allure + index
+      - name: Générer le rapport et index
         if: always()
-        run: npm run report:allure
+        run: npm run report
 
-      # 6. Génère dynamiquement un index HTML avec le résumé des tests
-      - name: Generate summary index.html
-        if: always()
-        run: npm run report:index
-
-      # 7. Sauvegarde le dossier ./docs comme artefact (GitHub Pages)
-      - name: Upload docs as artifact
+      # 6. Upload public/ comme artefact
+      - name: Upload public artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: docs
-          path: ./docs
+          name: public
+          path: ./public
 
   deploy:
     needs: test
@@ -59,30 +54,23 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1. Récupère le code (utile pour le contexte)
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2. Télécharge l'artefact contenant les rapports générés
-      - name: Download docs artifact
+      - name: Download public artifact
         uses: actions/download-artifact@v4
         with:
-          name: docs
-          path: ./docs
+          name: public
+          path: ./public
 
-      # 3. Déploie le contenu du dossier ./docs sur GitHub Pages (branche gh-pages)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./public
           publish_branch: gh-pages
 
-      # 4. Ajoute les liens vers les pages dans le résumé GitHub Actions
-      - name: Add landing page link
+      - name: Résumé dans GitHub Actions
         run: |
           echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
-
-      - name: Add Allure report link
-        run: |
           echo "📊 [Rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
