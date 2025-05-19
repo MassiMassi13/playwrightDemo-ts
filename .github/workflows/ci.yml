@@ -55,7 +55,7 @@ jobs:
           mkdir -p ./public/allure-reports
           cp -r ./allure-reports/latest ./public/allure-reports/ || echo "No latest report"
           cp -r ./allure-reports/report ./public/allure-reports/
-          cp ./public/index.html ./public/index.html
+         # cp ./public/index.html ./public/index.html
 
       # 8. Sauvegarder les artefacts pour le job deploy
       - name: Upload public artifacts
