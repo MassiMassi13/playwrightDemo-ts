@@ -3,6 +3,7 @@ import LoginPage from '../src/page-objects/loginPage/LoginPage';
 
 type Fixtures = {
   loginPage: LoginPage;
+
 };
 
 export const test = base.extend<Fixtures>({
