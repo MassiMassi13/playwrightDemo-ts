@@ -13,23 +13,23 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.38.1-focal
 
     steps:
-      # 1. Cloner le code source
+      # 1. Cloner le dépôt
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Installer Java (nécessaire pour Allure)
-      - name: Install Java (required for Allure)
+      # 2. Installer Java (requis pour Allure)
+      - name: Install Java
         run: |
           apt-get update -y
           apt-get install -y default-jdk
           echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
-      # 3. Installer les dépendances Node.js
-      - name: Install dependencies (npm + ts-node + typescript)
+      # 3. Installer les dépendances Node.js, Allure CLI et Playwright
+      - name: Install dependencies
         run: |
           npm ci
-          npm install ts-node typescript --save-dev
-          npm install -g allure-commandline --save-dev
+          npm install --save-dev ts-node typescript
+          npm install -g allure-commandline
           npx playwright install --with-deps
 
       # 4. Exécuter les tests Playwright
@@ -43,21 +43,21 @@ jobs:
         run: |
           allure generate ./allure-results --clean -o ./allure-reports/report
 
-      # 6. Générer la page d’accueil dynamique index.html
-      - name: Generate custom index.html
+      # 6. Générer dynamiquement index.html (avec ts-node en CommonJS)
+      - name: Generate index.html landing page
         if: always()
         run: npm run generate:index
 
-      # 7. Créer la structure pour GitHub Pages
+      # 7. Préparer les fichiers pour GitHub Pages
       - name: Prepare GitHub Pages directory
         if: always()
         run: |
           mkdir -p ./public/allure-reports
-          cp -r ./allure-reports/latest ./public/allure-reports/
+          cp -r ./allure-reports/latest ./public/allure-reports/ || echo "No latest report"
           cp -r ./allure-reports/report ./public/allure-reports/
-          cp ./allure-reports/latest/index.html ./public/index.html
+          cp ./public/index.html ./public/index.html
 
-      # 8. Uploader les fichiers à déployer comme artefacts
+      # 8. Sauvegarder les artefacts pour le job deploy
       - name: Upload public artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,11 +71,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1. Cloner le code
+      # 1. Cloner le dépôt
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Télécharger les artefacts "public"
+      # 2. Télécharger les artefacts générés
       - name: Download public artifact
         uses: actions/download-artifact@v4
         with:
@@ -90,11 +90,8 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
 
-      # 4. Ajouter les liens vers les rapports dans le résumé GitHub Actions
-      - name: Add landing page link to summary
+      # 4. Résumé avec liens utiles dans GitHub Actions
+      - name: Add page link to summary
         run: |
-          echo "🏠 [Voir la page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
-
-      - name: Add Allure report link to summary
-        run: |
-          echo "📊 [Voir le rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [Rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
