@@ -1,14 +1,14 @@
-// generate-index.cjs
-
+// CommonJS : Génération dynamique d’un index HTML
 const fs = require("fs");
 const path = require("path");
 
-// __dirname est natif en CommonJS
+const __dirname = __dirname; // disponible en CJS
+
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
-const branch = "main"; // Peut être dynamic si besoin
+const branch = "main";
 
-// Lire le summary Allure
+// Lecture du résumé des tests
 const summaryFile = path.join(__dirname, "allure-results", "summary.json");
 let summary = null;
 
@@ -21,58 +21,33 @@ try {
   console.warn("⚠️ Impossible de lire summary.json :", error.message);
 }
 
-// Statistiques de test
 const passed = summary?.statistic?.passed ?? 0;
 const failed = summary?.statistic?.failed ?? 0;
 const skipped = summary?.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
 
-// HTML généré
+// Génération HTML
 const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Rapport de Tests Playwright</title>
   <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      padding: 2rem;
-    }
-    .container {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      max-width: 600px;
-      width: 100%;
-      text-align: center;
-    }
-    .badge {
-      margin-bottom: 1rem;
-    }
-    .stats {
-      font-size: 1.2rem;
-      margin: 1rem 0;
-    }
+    body { font-family: sans-serif; background: #f4f4f4; display: flex; justify-content: center; padding: 2rem; }
+    .container { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
+    h1 { font-size: 2rem; margin-bottom: 1rem; }
+    .badge { margin-bottom: 1rem; }
+    .stats { font-size: 1.2rem; margin: 1rem 0; }
     .passed { color: green; }
     .failed { color: red; }
     .skipped { color: orange; }
-    a {
-      display: inline-block;
-      margin-top: 1rem;
-      text-decoration: none;
-      font-weight: bold;
-      color: #007acc;
-    }
+    a { display: inline-block; margin-top: 1rem; text-decoration: none; font-weight: bold; color: #007acc; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="badge">
-      <img src="https://img.shields.io/github/actions/workflow/status/${owner}/${name}/ci.yml?branch=${branch}&label=CI%20Status" alt="CI Status" />
+      <img src="https://img.shields.io/github/workflow/status/${owner}/${name}/Playwright%20Tests%20with%20Allure%20+%20GitHub%20Pages/${branch}?label=CI%20Status" alt="CI Status" />
     </div>
     <h1>🧪 Rapport de Tests</h1>
     ${
@@ -90,7 +65,7 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Écriture dans public/index.html
+// Écriture dans ./public/index.html
 const outputPath = path.join(__dirname, "public", "index.html");
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, html, "utf-8");
