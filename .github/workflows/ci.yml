@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.38.1-focal
 
@@ -59,10 +59,14 @@ jobs:
           name: allure-report
           path: ./allure-reports/report
 
-      - name: Prepare GitHub Pages directory
+      - name: Copier la page statique personnalisée depuis le rapport
+        run: |
+          mkdir -p ./public
+          cp ./allure-reports/report/index.html ./public/index.html
+
+      - name: Copier le rapport dans le répertoire public
         run: |
           mkdir -p ./public/allure-reports
-          cp -r ./allure-reports/latest ./public/allure-reports/
           cp -r ./allure-reports/report ./public/allure-reports/
 
       - name: Deploy to GitHub Pages
@@ -72,10 +76,7 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
 
-      - name: Add landing page link to summary
+      - name: Ajouter résumé dans le step summary
         run: |
-          echo "🏠 [Voir la page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/latest/index.html)" >> $GITHUB_STEP_SUMMARY
-      
-      - name: Add Allure report link to summary
-        run: |
-          echo "📊 [Voir le rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "🏠 [Accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [Allure Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
