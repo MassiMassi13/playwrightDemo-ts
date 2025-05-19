@@ -2,40 +2,40 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Support de __dirname en ESM
+// __dirname support
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Récupération du dépôt GitHub à partir de la variable d’environnement
+// Repo info (utile pour le badge)
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
-const branch = "main"; // à adapter si besoin
+const branch = "main";
 
-// Lecture du fichier summary.json généré par Allure
-const summaryFile = path.join(__dirname, "allure-results", "summary.json");
-let summary: any = null;
+// 📍 Corrigé : chemin vers le bon fichier summary.json généré par Allure
+const summaryFile = path.join(__dirname, "docs", "allure-reports", "report", "widgets", "summary.json");
+let summary = null;
 
 try {
   if (fs.existsSync(summaryFile)) {
     const raw = fs.readFileSync(summaryFile, "utf-8");
     summary = JSON.parse(raw);
   }
-} catch (error: any) {
+} catch (error) {
   console.warn("⚠️ Impossible de lire summary.json :", error.message);
 }
 
-// Extraction des statistiques
+// Données de test
 const passed = summary?.statistic?.passed ?? 0;
 const failed = summary?.statistic?.failed ?? 0;
 const skipped = summary?.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
 
-// HTML à générer
+// HTML
 const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rapport de Tests Playwright</title>
   <style>
     body {
@@ -81,7 +81,7 @@ const html = `<!DOCTYPE html>
 <body>
   <div class="container">
     <div class="badge">
-      <img src="https://img.shields.io/github/workflow/status/${owner}/${name}/Playwright%20Tests%20with%20Allure%20+%20GitHub%20Pages/${branch}?label=CI%20Status" alt="CI Status" />
+      <img src="https://img.shields.io/github/actions/workflow/status/${owner}/${name}/tests.yml?branch=${branch}&label=CI%20Status" alt="CI Status" />
     </div>
     <h1>🧪 Rapport de Tests</h1>
     ${
@@ -99,8 +99,8 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Écriture dans le dossier public
-const outputPath = path.join(__dirname, "public", "index.html");
+// Génération de l'index dans ./docs/index.html (pour GitHub Pages)
+const outputPath = path.join(__dirname, "docs", "index.html");
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, html, "utf-8");
 
