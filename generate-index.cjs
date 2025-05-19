@@ -2,8 +2,6 @@
 const fs = require("fs");
 const path = require("path");
 
-const __dirname = __dirname; // disponible en CJS
-
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
 const branch = "main";
