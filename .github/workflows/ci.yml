@@ -89,8 +89,8 @@ jobs:
       # 4. Ajoute les liens vers les rapports dans le résumé GitHub Actions
       - name: Add landing page link
         run: |
-          echo "\ud83c\udfe0 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
 
       - name: Add Allure report link
         run: |
-          echo "\ud83d\udcca [Rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [Rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
