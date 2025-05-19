@@ -25,7 +25,7 @@ try {
       <li>⏱️ Durée : ${summary.time.duration} ms</li>
     </ul>`;
 } catch (e) {
-  console.log("⚠️ Fichier summary.json non trouvé ou invalide.");
+  console.log("⚠️ summary.json non trouvé ou invalide.");
 }
 
 const html = `<!DOCTYPE html>
