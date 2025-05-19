@@ -1,30 +1,36 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-// Récupère les infos du dépôt GitHub
+// Support de __dirname en ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Récupération du dépôt GitHub à partir de la variable d’environnement
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
-const branch = "main"; // adapt if needed
+const branch = "main"; // à adapter si besoin
 
-// Fichier Allure summary
+// Lecture du fichier summary.json généré par Allure
 const summaryFile = path.join(__dirname, "allure-results", "summary.json");
-let summary = null;
+let summary: any = null;
 
 try {
   if (fs.existsSync(summaryFile)) {
     const raw = fs.readFileSync(summaryFile, "utf-8");
     summary = JSON.parse(raw);
   }
-} catch (error) {
+} catch (error: any) {
   console.warn("⚠️ Impossible de lire summary.json :", error.message);
 }
 
+// Extraction des statistiques
 const passed = summary?.statistic?.passed ?? 0;
 const failed = summary?.statistic?.failed ?? 0;
 const skipped = summary?.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
 
-// Génération du HTML
+// HTML à générer
 const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -93,7 +99,7 @@ const html = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Écriture du fichier
+// Écriture dans le dossier public
 const outputPath = path.join(__dirname, "public", "index.html");
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, html, "utf-8");
