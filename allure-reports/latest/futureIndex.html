@@ -1,81 +1,113 @@
-<!DOCTYPE html>
-<html lang="fr">
+// generate-index.cjs
+const fs = require("fs");
+const path = require("path");
 
+// Informations du dépôt
+const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
+const [owner, name] = repo.split("/");
+const branch = "main";
+
+// Lecture du résumé de test depuis Allure
+const summaryFile = path.join(__dirname, "public", "allure-reports", "report", "widgets", "summary.json");
+let summary = null;
+
+try {
+  if (fs.existsSync(summaryFile)) {
+    const raw = fs.readFileSync(summaryFile, "utf-8");
+    summary = JSON.parse(raw);
+  }
+} catch (error) {
+  console.warn("⚠️ Impossible de lire summary.json :", error.message);
+}
+
+// Récupération des stats
+const passed = summary?.statistic?.passed ?? 0;
+const failed = summary?.statistic?.failed ?? 0;
+const skipped = summary?.statistic?.skipped ?? 0;
+const total = passed + failed + skipped;
+
+// Horodatage
+const now = new Date().toLocaleString("fr-FR", {
+  dateStyle: "long",
+  timeStyle: "short",
+});
+
+const currentYear = new Date().getFullYear();
+
+// HTML moderne et stylé avec Tailwind
+const html = `<!DOCTYPE html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rapport Playwright – Massinissa D</title>
+  <title>Rapport de Tests CI – ${name}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="icon" href="https://playwright.dev/img/playwright-logo.svg" />
 </head>
-
 <body class="bg-gray-100 text-gray-800 min-h-screen">
-  <header class="bg-white shadow py-6 px-10 flex items-center justify-between">
-    <div class="flex items-center gap-4">
-      <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright Logo" class="w-12 h-12" />
-      <h1 class="text-3xl font-extrabold text-purple-700">Rapport de Tests Playwright</h1>
-    </div>
-    <div class="text-sm text-gray-500">
-      Généré le : <strong>19 mai 2025 – 10h12</strong>
-    </div>
-  </header>
+  <main class="px-6 py-10 max-w-3xl mx-auto">
+    <header class="mb-10 text-center">
+      <h1 class="text-3xl font-bold text-purple-700 mb-2">🧪 Rapport de Tests</h1>
+      <img class="mx-auto mb-4" src="https://img.shields.io/github/workflow/status/${owner}/${name}/Playwright%20Tests%20with%20Allure%20+%20GitHub%20Pages/${branch}?label=CI%20Status" alt="CI Status" />
+      <p class="text-sm text-gray-500">Généré le : ${now}</p>
+    </header>
 
-  <main class="px-10 py-12">
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-      <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
-        <i data-lucide="clock" class="w-6 h-6 text-purple-600"></i>
-        <div>
-          <p class="text-sm text-gray-500">Durée d'exécution</p>
-          <p class="text-lg font-semibold">1 min 42 sec</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
-        <i data-lucide="package-check" class="w-6 h-6 text-green-600"></i>
-        <div>
-          <p class="text-sm text-gray-500">Tests exécutés</p>
-          <p class="text-lg font-semibold">58</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
-        <i data-lucide="circle-check" class="w-6 h-6 text-green-600"></i>
-        <div>
-          <p class="text-sm text-gray-500">Résultats</p>
-          <p class="text-lg font-semibold text-green-700">✔ 57 réussis / ❌ 1 échec</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
-        <i data-lucide="github" class="w-6 h-6 text-gray-800"></i>
-        <div>
-          <p class="text-sm text-gray-500">Workflow GitHub</p>
-          <p class="text-lg font-semibold">playwright-ci.yml</p>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
-        <i data-lucide="server" class="w-6 h-6 text-blue-600"></i>
-        <div>
-          <p class="text-sm text-gray-500">Runner utilisé</p>
-          <p class="text-lg font-semibold">ubuntu-22.04</p>
-        </div>
-      </div>
-    </section>
+    ${
+      total > 0
+        ? `<section class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
+              <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+              <div>
+                <p class="text-sm text-gray-500">Tests réussis</p>
+                <p class="text-lg font-semibold text-green-700">✅ ${passed}</p>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
+              <i data-lucide="x-circle" class="w-6 h-6 text-red-600"></i>
+              <div>
+                <p class="text-sm text-gray-500">Tests échoués</p>
+                <p class="text-lg font-semibold text-red-700">❌ ${failed}</p>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
+              <i data-lucide="skip-forward" class="w-6 h-6 text-orange-500"></i>
+              <div>
+                <p class="text-sm text-gray-500">Tests ignorés</p>
+                <p class="text-lg font-semibold text-orange-600">⏭️ ${skipped}</p>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow flex items-center gap-4">
+              <i data-lucide="list" class="w-6 h-6 text-blue-600"></i>
+              <div>
+                <p class="text-sm text-gray-500">Total</p>
+                <p class="text-lg font-semibold text-blue-700">📊 ${total}</p>
+              </div>
+            </div>
+          </section>`
+        : `<p class="text-center text-gray-500 text-lg">Aucun résumé de test disponible.</p>`
+    }
 
-    <div class="text-center">
-      <a href="/playwrightDemo-ts/allure-reports/report/index.html"
-        class="inline-flex items-center justify-center gap-3 px-8 py-4 text-white text-lg font-semibold bg-purple-600 hover:bg-purple-700 rounded-xl transition">
-        <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
-        📊 Consulter le rapport Allure
+    <div class="text-center mt-8">
+      <a href="allure-reports/report/index.html"
+        class="inline-flex items-center justify-center gap-2 px-6 py-3 text-white text-lg bg-purple-600 hover:bg-purple-700 rounded-xl transition">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        Voir le rapport Allure
       </a>
     </div>
   </main>
 
   <footer class="mt-16 border-t text-center py-6 text-sm text-gray-400">
-    &copy; 2025 – Projet CI/CD Playwright par Massinissa D
+    &copy; ${currentYear} – Rapport CI/CD Playwright généré automatiquement
   </footer>
 
-  <script>
-    lucide.createIcons();
-  </script>
+  <script>lucide.createIcons();</script>
 </body>
+</html>`;
 
-</html>
+// Écriture du fichier HTML dans ./public/index.html
+const outputPath = path.join(__dirname, "public", "index.html");
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+fs.writeFileSync(outputPath, html, "utf-8");
+
+console.log("✅ index.html généré avec succès !");
