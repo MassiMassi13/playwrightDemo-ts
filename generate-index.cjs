@@ -117,7 +117,7 @@ const html = `<!DOCTYPE html>
     </main>
 
     <footer class="mt-16 border-t text-center py-6 text-sm text-gray-400">
-      &copy; ${new Date().getFullYear()} – Rapport généré par CI/CD Playwright
+      &copy; ${new Date().getFullYear()} – Rapport généré par CI/CD Playwright  Massinissa D
     </footer>
 
     <script>
