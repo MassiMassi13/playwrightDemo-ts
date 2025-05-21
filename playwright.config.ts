@@ -50,8 +50,9 @@ export default defineConfig({
 
     // Capturer des captures d'écran uniquement en cas d'échec
     screenshot: 'only-on-failure',
-    // 👈 indispensable en CI
+    // 👈 indispensable en CI.
     headless: true, 
+
     //viewport: { width: 1280, height: 720 },
   },
 
