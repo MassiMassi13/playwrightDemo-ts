@@ -42,6 +42,14 @@ jobs:
         run: |
           allure generate ./allure-results --clean -o ./allure-reports/report
 
+      # 📤 Upload summary.json pour utilisation par le script
+      - name: Upload summary.json for index
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: summary-json
+          path: ./allure-reports/report/widgets/summary.json
+
       # 📊 Génère le résumé HTML avec ton script CommonJS
       - name: Generate index.html summary
         if: always()
@@ -85,6 +93,17 @@ jobs:
         with:
           name: summary-page
           path: ./public
+
+      # 📥 Télécharge summary.json pour que generate-index.cjs fonctionne aussi en CI
+      - name: Download summary.json
+        uses: actions/download-artifact@v4
+        with:
+          name: summary-json
+          path: ./allure-reports/report/widgets
+
+      # 📊 Re-génère index.html avec les données summary.json (optionnel mais utile si besoin de mise à jour tardive)
+      - name: (Optionnel) Regenerate index.html from summary.json
+        run: node generate-index.cjs
 
       # 🚀 Déploie tout sur GitHub Pages
       - name: Deploy to GitHub Pages

@@ -9,7 +9,8 @@ const branch = process.env.GITHUB_REF_NAME || "main";
 const sha = (process.env.GITHUB_SHA || "abc1234").slice(0, 7);
 const workflow = process.env.GITHUB_WORKFLOW || "CI";
 const runId = process.env.GITHUB_RUN_ID;
-const runDate = new Date().toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
+// 🕒 Force le fuseau français
+const runDate = new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" });
 const ciLink = runId ? `https://github.com/${owner}/${name}/actions/runs/${runId}` : "#";
 
 // 📊 Lit le fichier summary.json généré par Allure
@@ -29,13 +30,19 @@ const failed = summary?.statistic?.failed ?? 0;
 const skipped = summary?.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
 
+// ✅ Calcul du taux de réussite si possible
+const passRate = total > 0 ? ((passed / total) * 100).toFixed(1) : null;
+
+// Pour affichage clair : "92.3 %" ou "–"
+const passRateDisplay = passRate !== null ? `${passRate} %` : "–";
+
 // ⏱️ Formate la durée en minutes/secondes si dispo
 const duration = summary?.time?.duration
   ? (() => {
-      const s = Math.round(summary.time.duration / 1000);
-      const m = Math.floor(s / 60);
-      return m > 0 ? `${m} min ${s % 60} s` : `${s} s`;
-    })()
+    const s = Math.round(summary.time.duration / 1000);
+    const m = Math.floor(s / 60);
+    return m > 0 ? `${m} min ${s % 60} s` : `${s} s`;
+  })()
   : "–";
 
 // 📝 Construit le contenu HTML du rapport
@@ -57,7 +64,7 @@ const html = `<!DOCTYPE html>
     <header class="bg-gray-800 p-4 rounded-xl shadow flex flex-col md:flex-row justify-between items-center">
       <div class="flex items-center gap-4">
         <img src="https://playwright.dev/img/playwright-logo.svg" alt="Logo" class="w-10 h-10" />
-        <h1 class="text-2xl font-bold text-purple-400">Rapport de TestsPlaywright Massinissa D – ${name}</h1>
+        <h1 class="text-2xl font-bold text-purple-400">Rapport de TestsPlaywright Massinissa D : ${name}</h1>
       </div>
       <div class="mt-2 md:mt-0 text-gray-300 text-sm">Généré le : <strong>${runDate}</strong></div>
     </header>
@@ -77,6 +84,10 @@ const html = `<!DOCTYPE html>
         <div class="bg-yellow-400 p-4 rounded text-center shadow">
           <h3 class="font-medium">⏭️ Ignorés</h3>
           <p class="text-2xl font-bold">${skipped}</p>
+        </div>
+        <div class="bg-indigo-400 p-4 rounded text-center shadow">
+           <h3 class="font-medium">📊 Taux de réussite</h3>
+           <p class="text-2xl font-bold">${passRateDisplay}</p>
         </div>
         <div class="bg-blue-400 p-4 rounded text-center shadow">
           <h3 class="font-medium">⏱️ Durée</h3>
