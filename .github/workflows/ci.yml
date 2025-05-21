@@ -9,11 +9,11 @@ on:
     branches: [ main ]
 
 jobs:
-  # 🔧 JOB PRINCIPAL : Exécution des tests Playwright + génération du rapport Allure
+  # 🔧 JOB DE TEST : lance Playwright + génère les rapports Allure
   test:
     runs-on: ubuntu-latest
 
-    # ✅ Utilise une image Docker Playwright existante correspondant à la version 1.50.0
+    # ✅ Utilise l'image officielle Playwright 1.50.0 (jammy)
     container:
       image: mcr.microsoft.com/playwright:v1.50.0-jammy
 
@@ -22,99 +22,92 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Installe Java (nécessaire pour faire fonctionner la CLI Allure)
+      # 2️⃣ Installe Java (nécessaire pour la CLI Allure)
       - name: Install Java (for Allure)
         run: |
           apt-get update -y
           apt-get install -y default-jdk
           echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
-      # 3️⃣ Installe les dépendances du projet + Allure CLI
+      # 3️⃣ Installe les dépendances NPM + CLI Allure + ts-node
       - name: Install dependencies
         run: |
           npm ci
-          npm install -g allure-commandline
+          npm install -g allure-commandline ts-node
 
-      # ⚠️ 3️⃣.5️⃣ Nettoie les anciens résultats Allure
-      - name: Cleanup previous Allure results
+      # 4️⃣ Supprime les anciens résultats Allure
+      - name: Cleanup old results
         run: rm -rf allure-results
 
-      # 4️⃣ Lance les tests Playwright
+      # 5️⃣ Lance les tests Playwright avec le reporter en ligne
       - name: Run Playwright tests
-        run: |
-          npx playwright test --reporter=line
-        continue-on-error: true
+        run: npx playwright test --reporter=line
+        continue-on-error: true  # ⚠️ On continue même si les tests échouent pour générer le rapport
 
-      # 5️⃣ Génère un rapport Allure dans un dossier horodaté : ./public/history/yyyy-mm-dd-<sha>/report
-      - name: Generate timestamped Allure report
+      # 6️⃣ Crée des variables d’environnement utiles : date, SHA court, dossier de destination
+      - name: Set variables (date, sha, folder)
+        id: vars
+        run: |
+          echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "folder=history/$(date +'%Y-%m-%d')-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      # 7️⃣ Génère le rapport Allure dans un sous-dossier horodaté unique
+      - name: Generate Allure report
         if: always()
         run: |
-          DATE=$(date +'%Y-%m-%d')
-          SHA=${GITHUB_SHA::7}
-          REPORT_DIR="./public/history/${DATE}-${SHA}/report"
-          mkdir -p "$REPORT_DIR"
-          if [ -d "allure-results" ]; then
-            allure generate allure-results --clean -o "$REPORT_DIR"
-          else
-            echo "⚠️ Aucun dossier 'allure-results' trouvé."
-            echo "<h1>⚠️ Aucun rapport disponible</h1>" > "$REPORT_DIR/index.html"
-          fi
+          mkdir -p ./public/${{ steps.vars.outputs.folder }}
+          allure generate allure-results --clean -o ./public/${{ steps.vars.outputs.folder }}/report
 
-      # 6️⃣ Génère dynamiquement un index.html premium dans ./public/
-      - name: Generate summary index.html
+      # 8️⃣ Met à jour le dossier ./public/latest vers le dernier rapport
+      - name: Copy latest report to ./public/latest
         if: always()
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF_NAME: ${{ github.ref_name }}
-          GITHUB_WORKFLOW: ${{ github.workflow }}
+        run: |
+          rm -rf ./public/latest
+          cp -r ./public/${{ steps.vars.outputs.folder }} ./public/latest
+
+      # 9️⃣ Génère dynamiquement un index HTML global
+      - name: Generate global index.html
+        if: always()
         run: npm run report:index
 
-      # 7️⃣ Copie le dernier rapport dans ./public/allure-reports/latest
-      - name: Create latest alias
-        if: always()
-        run: |
-          DATE=$(date +'%Y-%m-%d')
-          SHA=${GITHUB_SHA::7}
-          cp -r "./public/history/${DATE}-${SHA}/report" ./public/allure-reports/latest
-
-      # 8️⃣ Sauvegarde le dossier ./public pour déploiement
-      - name: Upload public artifact
+      # 🔟 Sauvegarde tout le dossier ./public (contenant l'historique + latest + index.html)
+      - name: Upload public folder
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: public
           path: ./public
 
-  # 🌍 JOB DE DÉPLOIEMENT : déploie les rapports HTML sur GitHub Pages
+  # 🌍 JOB DE DÉPLOIEMENT : déploie sur GitHub Pages depuis ./public
   deploy:
     needs: test
     runs-on: ubuntu-latest
 
-    # ⛔ On ne déploie que si on est sur la branche main
+    # ⛔ Déploiement uniquement sur la branche `main`
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1️⃣ Récupère le code du dépôt
+      # 1️⃣ Récupère le code
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2️⃣ Récupère les fichiers générés dans le dossier ./public
-      - name: Download public artifact
+      # 2️⃣ Télécharge le dossier ./public depuis l'étape précédente
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: public
           path: ./public
 
-      # 3️⃣ Vérifie que le dernier rapport existe
-      - name: Check if latest report exists
+      # 3️⃣ Vérifie que le rapport Allure a bien été généré
+      - name: Check Allure report
         run: |
-          if [ ! -f "./public/allure-reports/latest/index.html" ]; then
-            echo "❌ Dernier rapport Allure non trouvé."
+          if [ ! -f "./public/latest/report/index.html" ]; then
+            echo "❌ Rapport Allure non trouvé."
             exit 1
           fi
 
-      # 4️⃣ Déploie le contenu du dossier ./public sur la branche gh-pages
+      # 4️⃣ Déploie ./public sur la branche GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -123,12 +116,7 @@ jobs:
           publish_branch: gh-pages
 
       # 5️⃣ Ajoute les liens directs dans le résumé GitHub Actions
-      - name: Add landing page links
+      - name: Add summary links
         run: |
-          REPO_NAME=${{ github.event.repository.name }}
-          REPO_OWNER=${{ github.repository_owner }}
-          BASE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}"
-
-          echo "🏠 [Page d’accueil]($BASE_URL/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "📊 [Dernier rapport Allure (latest)]($BASE_URL/allure-reports/latest/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "📚 [Historique des rapports]($BASE_URL/history/)" >> $GITHUB_STEP_SUMMARY
+          echo "🏠 [Index global](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "🆕 [Dernier rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/latest/report/index.html)" >> $GITHUB_STEP_SUMMARY

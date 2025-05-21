@@ -1,15 +1,18 @@
 import fs from "fs";
 import path from "path";
 
-// Infos GitHub (par défauts si non en CI)
+// 🧠 Récupération des métadonnées GitHub Actions ou valeurs par défaut pour usage local
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
 const branch = process.env.GITHUB_REF_NAME || "main";
 const sha = process.env.GITHUB_SHA?.slice(0, 7) || "abc1234";
 const workflow = process.env.GITHUB_WORKFLOW || "CI";
-const runDate = new Date().toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
+const runDate = new Date().toLocaleString("fr-FR", {
+  dateStyle: "long",
+  timeStyle: "short",
+});
 
-// Chemin vers summary.json généré par Allure
+// 📍 Chemin vers le fichier résumé Allure généré automatiquement
 const summaryFile = path.join(__dirname, "public", "allure-reports", "report", "widgets", "summary.json");
 
 interface Summary {
@@ -25,6 +28,7 @@ interface Summary {
 
 let summary: Summary = {};
 
+// 📦 Lecture du fichier summary.json pour extraire les statistiques des tests
 if (fs.existsSync(summaryFile)) {
   try {
     const raw = fs.readFileSync(summaryFile, "utf-8");
@@ -34,11 +38,13 @@ if (fs.existsSync(summaryFile)) {
   }
 }
 
+// ✅ Extraction des statistiques et calculs
 const passed = summary.statistic?.passed ?? 0;
 const failed = summary.statistic?.failed ?? 0;
 const skipped = summary.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
 
+// ⏱️ Formatage de la durée totale des tests
 const duration = summary.time?.duration
   ? (() => {
       const s = Math.round(summary.time!.duration! / 1000);
@@ -47,6 +53,7 @@ const duration = summary.time?.duration
     })()
   : "–";
 
+// 🧾 HTML complet avec Tailwind, icônes Lucide et style responsive moderne
 const html = `<!DOCTYPE html>
 <html lang="fr" class="dark">
   <head>
@@ -146,6 +153,7 @@ const html = `<!DOCTYPE html>
   </body>
 </html>`;
 
+// 📤 Écriture du fichier HTML dans ./public/index.html (création récursive du dossier si besoin)
 const outputPath = path.join(__dirname, "public", "index.html");
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 fs.writeFileSync(outputPath, html, "utf-8");
