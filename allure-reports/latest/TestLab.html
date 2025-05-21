@@ -1,34 +1,4 @@
-// generate-index.cjs
-const fs = require("fs");
-const path = require("path");
-
-const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
-const [owner, name] = repo.split("/");
-const branch = process.env.GITHUB_REF_NAME || "main";
-const sha = process.env.GITHUB_SHA?.slice(0, 7) || "abc1234";
-const workflow = process.env.GITHUB_WORKFLOW || "CI";
-const runDate = new Date().toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
-
-const summaryFile = path.join(__dirname, "public", "allure-reports", "report", "widgets", "summary.json");
-let summary = null;
-
-try {
-  if (fs.existsSync(summaryFile)) {
-    const raw = fs.readFileSync(summaryFile, "utf-8");
-    summary = JSON.parse(raw);
-  }
-} catch (error) {
-  console.warn("⚠️ Impossible de lire summary.json :", error.message);
-}
-
-const passed = summary?.statistic?.passed ?? 0;
-const failed = summary?.statistic?.failed ?? 0;
-const skipped = summary?.statistic?.skipped ?? 0;
-const total = passed + failed + skipped;
-const duration = summary?.time?.duration ? ((s = Math.round(summary.time.duration / 1000),
- m = Math.floor(s / 60)) => m > 0 ? `${m}min ${s % 60}s` : `${s}s`)() : "–";;
-
-const html = `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr" class="dark">
   <head>
     <meta charset="UTF-8" />
@@ -81,7 +51,7 @@ const html = `<!DOCTYPE html>
           <i data-lucide="circle-check" class="w-6 h-6 text-green-600"></i>
           <div>
             <p class="text-sm text-gray-500">Résultats</p>
-            <p class="text-lg font-semibold text-green-700 dark:text-green-400">✅ ${passed} / 🟥 ${failed} / ⏭️ ${skipped}</p>
+            <p class="text-lg font-semibold text-green-700 dark:text-green-400">✔ ${passed} / ❌ ${failed} / ⏭️ ${skipped}</p>
           </div>
         </div>
         <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
@@ -125,10 +95,4 @@ const html = `<!DOCTYPE html>
       lucide.createIcons();
     </script>
   </body>
-</html>`;
-
-const outputPath = path.join(__dirname, "public", "index.html");
-fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-fs.writeFileSync(outputPath, html, "utf-8");
-
-console.log("✅ Rapport HTML premium généré avec succès !");
+</html>
