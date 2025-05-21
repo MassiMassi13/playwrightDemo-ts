@@ -6,84 +6,69 @@
   <title>Rapport Playwright – playwrightDemo-ts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" href="https://playwright.dev/img/playwright-logo.svg" />
   <script>
     tailwind.config = {
-      darkMode: 'media',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif']
-          }
-        }
-      }
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
     };
   </script>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans min-h-screen">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans min-h-screen relative">
+  <!-- 🌙 Toggle Thème -->
+  <button id="themeToggle" class="absolute top-4 right-4 p-2 rounded bg-gray-300 dark:bg-gray-700">🌓</button>
+  <script>document.getElementById("themeToggle").onclick = () => document.documentElement.classList.toggle("dark");</script>
+
   <header class="bg-white dark:bg-gray-800 shadow py-6 px-10 flex items-center justify-between">
     <div class="flex items-center gap-4">
       <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright Logo" class="w-12 h-12" />
       <h1 class="text-4xl font-extrabold text-purple-200 dark:text-purple-400">Rapport de Tests – Massinissa D</h1>
     </div>
-    <div class="text-sm text-gray-500 dark:text-gray-400">
-      Généré le : <strong>21 mai 2025 à 13:22</strong>
-    </div>
+    <div class="text-sm text-gray-500 dark:text-gray-400">Généré le : <strong>21 mai 2025 à 13:55</strong></div>
   </header>
 
-  <main class="px-10 py-12">
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-      
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
-    <i data-lucide="clock" class="w-6 h-6 text-purple-600 dark:text-purple-300"></i>
-    <div>
-      <p class="text-sm text-gray-500">Durée d'exécution</p>
-      <p class="text-lg font-semibold ">–</p>
-    </div>
-  </div>
-      
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
-    <i data-lucide="package-check" class="w-6 h-6 text-purple-600 dark:text-purple-300"></i>
-    <div>
-      <p class="text-sm text-gray-500">Tests exécutés</p>
-      <p class="text-lg font-semibold ">0</p>
-    </div>
-  </div>
-      
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
-    <i data-lucide="circle-check" class="w-6 h-6 text-purple-600 dark:text-purple-300"></i>
-    <div>
-      <p class="text-sm text-gray-500">Résultats</p>
-      <p class="text-lg font-semibold text-green-700 dark:text-green-400">✅ 0 / 🟥 0 / ⏭️ 0</p>
-    </div>
-  </div>
-      
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
-    <i data-lucide="github" class="w-6 h-6 text-purple-600 dark:text-purple-300"></i>
-    <div>
-      <p class="text-sm text-gray-500">Workflow GitHub</p>
-      <p class="text-lg font-semibold ">Playwright Tests with Allure + GitHub Pages</p>
-    </div>
-  </div>
-      
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
-    <i data-lucide="git-branch" class="w-6 h-6 text-purple-600 dark:text-purple-300"></i>
-    <div>
-      <p class="text-sm text-gray-500">Branche</p>
-      <p class="text-lg font-semibold ">main</p>
-    </div>
-  </div>
-      
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow flex items-center gap-4 hover:shadow-lg transition">
-    <i data-lucide="hash" class="w-6 h-6 text-purple-600 dark:text-purple-300"></i>
-    <div>
-      <p class="text-sm text-gray-500">SHA</p>
-      <p class="text-lg font-semibold "><a href="https://github.com/MassiMassi13/playwrightDemo-ts/commit/178b2e5" class="text-blue-500 hover:underline">178b2e5</a></p>
-    </div>
-  </div>
-    </section>
+  <div class="bg-yellow-500 text-white font-bold text-center py-2">⏳ Aucun test</div>
 
-    <div class="text-center">
+  <main class="px-10 py-12">
+    <!-- 📋 Tableau Résumé -->
+    <table class="min-w-full table-auto border rounded-xl text-left text-sm mb-10">
+      <thead>
+        <tr class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+          <th class="p-3">Clé</th><th class="p-3">Valeur</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+        <tr><td class="p-3">Durée</td><td class="p-3">–</td></tr>
+        <tr><td class="p-3">Tests exécutés</td><td class="p-3">0</td></tr>
+        <tr><td class="p-3">Succès / Échecs / Ignorés</td><td class="p-3">✅ 0 / 🟥 0 / ⏭️ 0</td></tr>
+        <tr><td class="p-3">Branche</td><td class="p-3">main</td></tr>
+        <tr><td class="p-3">SHA</td><td class="p-3"><a href="https://github.com/MassiMassi13/playwrightDemo-ts/commit/3e7bbf5" class="text-blue-500 hover:underline">3e7bbf5</a></td></tr>
+        <tr><td class="p-3">Workflow</td><td class="p-3">Playwright Tests with Allure + GitHub Pages</td></tr>
+        <tr><td class="p-3">Logs CI</td><td class="p-3"><a href="https://github.com/MassiMassi13/playwrightDemo-ts/actions/runs/15164054790" class="text-blue-500 hover:underline">Voir les logs</a></td></tr>
+      </tbody>
+    </table>
+
+    <!-- 📈 Mini Graphique Doughnut -->
+    <div class="max-w-sm mx-auto">
+      <canvas id="chart"></canvas>
+    </div>
+    <script>
+      new Chart(document.getElementById("chart"), {
+        type: 'doughnut',
+        data: {
+          labels: ["Succès", "Échecs", "Ignorés"],
+          datasets: [{
+            data: [0, 0, 0],
+            backgroundColor: ["#16a34a", "#dc2626", "#eab308"]
+          }]
+        },
+        options: { plugins: { legend: { position: 'bottom' } } }
+      });
+    </script>
+
+    <!-- 📊 Lien rapport Allure -->
+    <div class="text-center mt-10">
       <a href="allure-reports/report/index.html" class="inline-flex items-center justify-center gap-3 px-8 py-4 text-white text-lg font-semibold bg-purple-600 hover:bg-purple-700 rounded-xl transition">
         <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
         📊 Consulter le rapport Allure
@@ -94,7 +79,6 @@
   <footer class="mt-16 border-t text-center py-6 text-sm text-gray-400">
     &copy; 2025 – Rapport CI/CD Playwright – Massinissa D
   </footer>
-
   <script>lucide.createIcons();</script>
 </body>
 </html>
