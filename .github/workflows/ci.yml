@@ -1,113 +1,92 @@
 name: Playwright Tests with Allure + GitHub Pages
 
-# 📦 Ce workflow s'exécute :
-# - à chaque push ou pull request sur la branche `main`
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  # 🔧 JOB DE TEST : lance Playwright + génère les rapports Allure
   test:
     runs-on: ubuntu-latest
-
-    # ✅ Utilise l'image officielle Playwright 1.50.0 (jammy)
     container:
-      image: mcr.microsoft.com/playwright:v1.50.0-jammy
+      image: mcr.microsoft.com/playwright:v1.38.1-focal
 
     steps:
-      # 1️⃣ Récupère le code source du repo
+      # 📥 Récupère le code source
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2️⃣ Installe Java (nécessaire pour la CLI Allure)
-      - name: Install Java (for Allure)
+      # ☕ Installe Java pour Allure
+      - name: Install Java (required for Allure)
         run: |
           apt-get update -y
           apt-get install -y default-jdk
           echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
-      # 3️⃣ Installe les dépendances NPM + CLI Allure + ts-node
+      # 📦 Installe les dépendances projet + Allure CLI
       - name: Install dependencies
         run: |
           npm ci
-          npm install -g allure-commandline ts-node
+          npm install -g allure-commandline --save-dev
+          npx playwright install --with-deps
 
-      # 4️⃣ Supprime les anciens résultats Allure
-      - name: Cleanup old results
-        run: rm -rf allure-results
-
-      # 5️⃣ Lance les tests Playwright avec le reporter en ligne
+      # ▶️ Lance les tests Playwright
       - name: Run Playwright tests
-        run: npx playwright test --reporter=line
-        continue-on-error: true  # ⚠️ On continue même si les tests échouent pour générer le rapport
+        run: npx playwright test --workers=2
+        continue-on-error: true
 
-      # 6️⃣ Crée des variables d’environnement utiles : date, SHA court, dossier de destination
-      - name: Set variables (date, sha, folder)
-        id: vars
-        run: |
-          echo "sha=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
-          echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
-          echo "folder=history/$(date +'%Y-%m-%d')-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
-
-      # 7️⃣ Génère le rapport Allure dans un sous-dossier horodaté unique
+      # 🧾 Génère le rapport Allure HTML
       - name: Generate Allure report
         if: always()
         run: |
-          mkdir -p ./public/${{ steps.vars.outputs.folder }}
-          allure generate allure-results --clean -o ./public/${{ steps.vars.outputs.folder }}/report
+          allure generate ./allure-results --clean -o ./allure-reports/report
 
-      # 8️⃣ Met à jour le dossier ./public/latest vers le dernier rapport
-      - name: Copy latest report to ./public/latest
+      # 📊 Génère le résumé HTML avec ton script CommonJS
+      - name: Generate index.html summary
         if: always()
-        run: |
-          rm -rf ./public/latest
-          cp -r ./public/${{ steps.vars.outputs.folder }} ./public/latest
+        run: node generate-index.cjs
 
-      # 9️⃣ Génère dynamiquement un index HTML global
-      - name: Generate global index.html
-        if: always()
-        run: npm run report:index
-
-      # 🔟 Sauvegarde tout le dossier ./public (contenant l'historique + latest + index.html)
-      - name: Upload public folder
+      # 📤 Upload le rapport complet
+      - name: Upload Allure report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: public
-          path: ./public
+          name: allure-report
+          path: ./allure-reports/report
 
-  # 🌍 JOB DE DÉPLOIEMENT : déploie sur GitHub Pages depuis ./public
+      # 📤 Upload le fichier résumé HTML
+      - name: Upload summary index.html
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: summary-page
+          path: ./public/index.html
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
-
-    # ⛔ Déploiement uniquement sur la branche `main`
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1️⃣ Récupère le code
-      - name: Checkout
+      # 📥 Récupère le code (nécessaire pour que le dépôt existe)
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Télécharge le dossier ./public depuis l'étape précédente
-      - name: Download artifact
+      # 📦 Récupère les artefacts générés (rapport + page HTML)
+      - name: Download Allure report
         uses: actions/download-artifact@v4
         with:
-          name: public
+          name: allure-report
+          path: ./public/allure-reports/report
+
+      - name: Download summary page
+        uses: actions/download-artifact@v4
+        with:
+          name: summary-page
           path: ./public
 
-      # 3️⃣ Vérifie que le rapport Allure a bien été généré
-      - name: Check Allure report
-        run: |
-          if [ ! -f "./public/latest/report/index.html" ]; then
-            echo "❌ Rapport Allure non trouvé."
-            exit 1
-          fi
-
-      # 4️⃣ Déploie ./public sur la branche GitHub Pages
+      # 🚀 Déploie tout sur GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -115,8 +94,8 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
 
-      # 5️⃣ Ajoute les liens directs dans le résumé GitHub Actions
-      - name: Add summary links
+      # 📝 Ajoute les liens de résumé dans l’onglet "Summary" du workflow
+      - name: Add summary links to workflow summary
         run: |
-          echo "🏠 [Index global](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
-          echo "🆕 [Dernier rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/latest/report/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [Voir le rapport Allure](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/allure-reports/report/index.html)" >> $GITHUB_STEP_SUMMARY
