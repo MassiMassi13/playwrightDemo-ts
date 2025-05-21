@@ -1,0 +1,7 @@
+{ gender: 'Male', civility: 'Monsieur', firstName: 'Dennis' }
+Nom généré Par la lib fakers : Beatty
+🚀 Employé généré :  - Male 
+🔹 Status : Part-Time Contract 
+🔹 Include : Current and Past Employees 
+🔹 Job Title : QA Engineer 
+🔹 Sub Unit : Development
