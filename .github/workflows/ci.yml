@@ -13,10 +13,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # ✅ Utilise une image Docker Playwright qui correspond à la version locale 1.50.1
+    # ✅ Utilise une image Docker Playwright existante correspondant à la version 1.50.0
+    # Le tag 1.50.1-noble n'existe pas encore sur Docker Hub !
     container:
-      image: mcr.microsoft.com/playwright:v1.50.1-noble
-      
+      image: mcr.microsoft.com/playwright:v1.50.0-jammy
+
     steps:
       # 1️⃣ Récupère le code source du repo
       - name: Checkout code
@@ -27,7 +28,6 @@ jobs:
         run: |
           apt-get update -y
           apt-get install -y default-jdk
-          # Exporte JAVA_HOME pour que Allure fonctionne correctement
           echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
       # 3️⃣ Installe les dépendances du projet + Allure CLI
@@ -36,27 +36,29 @@ jobs:
           npm ci                              # installation propre depuis package-lock.json
           npm install -g allure-commandline   # installe la CLI Allure globalement
 
-      # ⚠️ 3️⃣.5️⃣ Étape CRUCIALE : Nettoie les anciens résultats Allure
-      # Sinon, les fichiers des runs précédents peuvent fausser la durée totale du test
+      # ⚠️ 3️⃣.5️⃣ Nettoie les anciens résultats Allure
       - name: Cleanup previous Allure results
         run: rm -rf allure-results
 
-      # 4️⃣ Lance les tests Playwright (même si ça échoue, on veut continuer pour générer les rapports)
+      # 4️⃣ Lance les tests Playwright avec le flag --headed désactivé pour éviter les erreurs X11
       - name: Run Playwright tests
-        run: npm run test
+        run: |
+          npx playwright test --reporter=line
         continue-on-error: true
 
       # 5️⃣ Génère un rapport Allure dans ./public/allure-reports/report
       - name: Generate Allure report
-        if: always()   # Toujours exécuter cette étape même si les tests échouent
-        run: npm run report:allure
+        if: always()
+        run: |
+          mkdir -p ./public/allure-reports
+          allure generate allure-results --clean -o ./public/allure-reports/report
 
       # 6️⃣ Génére dynamiquement un fichier `index.html` de résumé visuel (Playwright custom report)
       - name: Generate summary index.html
         if: always()
         run: npm run report:index
 
-      # 7️⃣  Sauvegarde le dossier ./public (qui contient les rapports HTML) comme artefact pour déploiement
+      # 7️⃣ Sauvegarde le dossier ./public (qui contient les rapports HTML) comme artefact pour déploiement
       - name: Upload public artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -66,14 +68,14 @@ jobs:
 
   # 🌍 JOB DE DÉPLOIEMENT : déploie les rapports HTML sur GitHub Pages
   deploy:
-    needs: test   # ⛓️ Ce job dépend du job "test"
+    needs: test
     runs-on: ubuntu-latest
 
     # ⛔ On ne déploie que si on est sur la branche main (évite le déploiement en pull request)
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1️⃣ Récupère le code du dépôt (utile si des infos du repo sont nécessaires)
+      # 1️⃣ Récupère le code du dépôt
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -84,7 +86,15 @@ jobs:
           name: public
           path: ./public
 
-      # 3️⃣ Déploie le contenu du dossier `./public` sur la branche `gh-pages`
+      # 3️⃣ Vérifie que le rapport Allure a bien été généré (évite les 404)
+      - name: Check if Allure report exists
+        run: |
+          if [ ! -f "./public/allure-reports/report/index.html" ]; then
+            echo "❌ Rapport Allure non trouvé. La génération a échoué."
+            exit 1
+          fi
+
+      # 4️⃣ Déploie le contenu du dossier ./public sur la branche gh-pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -92,7 +102,7 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
 
-      # 4️⃣ Ajoute les liens directs vers le rapport dans le résumé GitHub Actions
+      # 5️⃣ Ajoute les liens directs vers les rapports dans le résumé GitHub Actions
       - name: Add landing page link
         run: |
           echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
