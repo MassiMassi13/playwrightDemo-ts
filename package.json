@@ -6,7 +6,7 @@
   "scripts": {
     "test": "playwright test",
     "report:allure": "allure generate ./allure-results --clean -o ./public/allure-reports/report",
-    "report:index": "ts-node generate-index.ts",
+    "report:index": "node generate-index.ts",
     "report": "npm run report:allure && npm run report:index"
   },
   "keywords": [],
