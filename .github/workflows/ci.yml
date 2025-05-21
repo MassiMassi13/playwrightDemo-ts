@@ -15,8 +15,8 @@ jobs:
 
     # ✅ Utilise une image Docker Playwright qui correspond à la version locale 1.50.1
     container:
-      image: mcr.microsoft.com/playwright:v1.50.0-focal
-
+      image: mcr.microsoft.com/playwright:v1.51.0-focal
+      
     steps:
       # 1️⃣ Récupère le code source du repo
       - name: Checkout code
