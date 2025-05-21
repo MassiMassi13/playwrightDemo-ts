@@ -1,7 +1,7 @@
-// generate-index.cjs
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
 
+// Infos GitHub (par défauts si non en CI)
 const repo = process.env.GITHUB_REPOSITORY || "demo/demo";
 const [owner, name] = repo.split("/");
 const branch = process.env.GITHUB_REF_NAME || "main";
@@ -9,24 +9,43 @@ const sha = process.env.GITHUB_SHA?.slice(0, 7) || "abc1234";
 const workflow = process.env.GITHUB_WORKFLOW || "CI";
 const runDate = new Date().toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" });
 
+// Chemin vers summary.json généré par Allure
 const summaryFile = path.join(__dirname, "public", "allure-reports", "report", "widgets", "summary.json");
-let summary = null;
 
-try {
-  if (fs.existsSync(summaryFile)) {
-    const raw = fs.readFileSync(summaryFile, "utf-8");
-    summary = JSON.parse(raw);
-  }
-} catch (error) {
-  console.warn("⚠️ Impossible de lire summary.json :", error.message);
+interface Summary {
+  statistic?: {
+    passed?: number;
+    failed?: number;
+    skipped?: number;
+  };
+  time?: {
+    duration?: number;
+  };
 }
 
-const passed = summary?.statistic?.passed ?? 0;
-const failed = summary?.statistic?.failed ?? 0;
-const skipped = summary?.statistic?.skipped ?? 0;
+let summary: Summary = {};
+
+if (fs.existsSync(summaryFile)) {
+  try {
+    const raw = fs.readFileSync(summaryFile, "utf-8");
+    summary = JSON.parse(raw);
+  } catch (error: any) {
+    console.warn("⚠️ Impossible de lire summary.json :", error.message);
+  }
+}
+
+const passed = summary.statistic?.passed ?? 0;
+const failed = summary.statistic?.failed ?? 0;
+const skipped = summary.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
-const duration = summary?.time?.duration ? ((s = Math.round(summary.time.duration / 1000),
- m = Math.floor(s / 60)) => m > 0 ? `${m}min ${s % 60}s` : `${s}s`)() : "–";;
+
+const duration = summary.time?.duration
+  ? (() => {
+      const s = Math.round(summary.time!.duration! / 1000);
+      const m = Math.floor(s / 60);
+      return m > 0 ? `${m}min ${s % 60}s` : `${s}s`;
+    })()
+  : "–";
 
 const html = `<!DOCTYPE html>
 <html lang="fr" class="dark">
@@ -54,7 +73,7 @@ const html = `<!DOCTYPE html>
     <header class="bg-white dark:bg-gray-800 shadow py-6 px-10 flex items-center justify-between">
       <div class="flex items-center gap-4">
         <img src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright Logo" class="w-12 h-12" />
-        <h1 class="text-5xl font-extrabold text-purple-200 dark:text-purple-400 text-center" >Rapport de Tests Projet Playwright  Massinissa D </h1>
+        <h1 class="text-5xl font-extrabold text-purple-200 dark:text-purple-400 text-center">Rapport de Tests Projet Playwright – Massinissa D</h1>
       </div>
       <div class="text-sm text-gray-500 dark:text-gray-400">
         Généré le : <strong>${runDate}</strong>
@@ -118,7 +137,7 @@ const html = `<!DOCTYPE html>
     </main>
 
     <footer class="mt-16 border-t text-center py-6 text-sm text-gray-400">
-      &copy; ${new Date().getFullYear()} – Rapport généré par CI/CD Playwright  Massinissa D
+      &copy; ${new Date().getFullYear()} – Rapport généré par CI/CD Playwright – Massinissa D
     </footer>
 
     <script>
