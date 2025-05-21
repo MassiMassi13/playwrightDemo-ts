@@ -13,12 +13,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    # Utilisation de l’image officielle Playwright (contient déjà Chromium, Firefox, WebKit, etc.)
+    # ✅ Utilise une image Docker Playwright qui correspond à la version locale 1.50.1
     container:
-      image: mcr.microsoft.com/playwright:v1.38.1-focal
+      image: mcr.microsoft.com/playwright:v1.50.1-focal
 
     steps:
-      # 1️⃣ Récupère le code source de ton dépôt
+      # 1️⃣ Récupère le code source du repo
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -46,7 +46,7 @@ jobs:
         run: npm run test
         continue-on-error: true
 
-      # 5️⃣ Génére le rapport Allure à partir des fichiers JSON dans `allure-results/`
+      # 5️⃣ Génère un rapport Allure dans ./public/allure-reports/report
       - name: Generate Allure report
         if: always()   # Toujours exécuter cette étape même si les tests échouent
         run: npm run report:allure
@@ -73,7 +73,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1️⃣ Récupère le dépôt (utile pour contexte ou liens GitHub)
+      # 1️⃣ Récupère le code du dépôt (utile si des infos du repo sont nécessaires)
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -92,7 +92,7 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
 
-      # 4️⃣ Ajoute les liens vers les rapports dans le résumé de la run GitHub Actions
+      # 4️⃣ Ajoute les liens directs vers le rapport dans le résumé GitHub Actions
       - name: Add landing page link
         run: |
           echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY
