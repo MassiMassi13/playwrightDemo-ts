@@ -61,8 +61,9 @@ const html = `<!DOCTYPE html>
   </script>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans min-h-screen relative">
+
   <!-- 🌙 Toggle Thème -->
-  <button id="themeToggle" class="absolute top-4 right-4 p-2 rounded bg-gray-300 dark:bg-gray-700">🌓</button>
+  <button id="themeToggle" class="absolute top-4 right-4 p-2 rounded bg-gray-300 dark:bg-gray-700 transition hover:scale-110">🌓</button>
   <script>document.getElementById("themeToggle").onclick = () => document.documentElement.classList.toggle("dark");</script>
 
   <header class="bg-white dark:bg-gray-800 shadow py-6 px-10 flex items-center justify-between">
@@ -73,24 +74,24 @@ const html = `<!DOCTYPE html>
     <div class="text-sm text-gray-500 dark:text-gray-400">Généré le : <strong>${runDate}</strong></div>
   </header>
 
-  <div class="${statusColor} text-white font-bold text-center py-2">${status}</div>
+  <div class="${statusColor} text-white font-bold text-center py-2 transition-all duration-500">${status}</div>
 
   <main class="px-10 py-12">
     <!-- 📋 Tableau Résumé -->
-    <table class="min-w-full table-auto border rounded-xl text-left text-sm mb-10">
+    <table class="min-w-full table-auto border rounded-xl text-left text-sm mb-10 shadow-lg">
       <thead>
         <tr class="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-          <th class="p-3">Clé</th><th class="p-3">Valeur</th>
+          <th class="p-3">🗂️ Clé</th><th class="p-3">📌 Valeur</th>
         </tr>
       </thead>
       <tbody class="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-        <tr><td class="p-3">Durée</td><td class="p-3">${duration}</td></tr>
-        <tr><td class="p-3">Tests exécutés</td><td class="p-3">${total}</td></tr>
-        <tr><td class="p-3">Succès / Échecs / Ignorés</td><td class="p-3">✅ ${passed} / 🟥 ${failed} / ⏭️ ${skipped}</td></tr>
-        <tr><td class="p-3">Branche</td><td class="p-3">${branch}</td></tr>
-        <tr><td class="p-3">SHA</td><td class="p-3"><a href="https://github.com/${owner}/${name}/commit/${sha}" class="text-blue-500 hover:underline">${sha}</a></td></tr>
-        <tr><td class="p-3">Workflow</td><td class="p-3">${workflow}</td></tr>
-        <tr><td class="p-3">Logs CI</td><td class="p-3"><a href="${ciLink}" class="text-blue-500 hover:underline">Voir les logs</a></td></tr>
+        <tr><td class="p-3">⏱️ Durée</td><td class="p-3">${duration}</td></tr>
+        <tr><td class="p-3">🧪 Tests exécutés</td><td class="p-3">${total}</td></tr>
+        <tr><td class="p-3">📊 Résultats</td><td class="p-3">✅ ${passed} / ❌ ${failed} / ⏭️ ${skipped}</td></tr>
+        <tr><td class="p-3">🌿 Branche</td><td class="p-3"><a href="https://github.com/${owner}/${name}/tree/${branch}" class="text-blue-500 hover:underline">${branch}</a></td></tr>
+        <tr><td class="p-3">🔐 SHA</td><td class="p-3"><a href="https://github.com/${owner}/${name}/commit/${sha}" class="text-blue-500 hover:underline">${sha}</a></td></tr>
+        <tr><td class="p-3">⚙️ Workflow</td><td class="p-3">${workflow}</td></tr>
+        <tr><td class="p-3">📄 Logs CI</td><td class="p-3"><a href="${ciLink}" class="text-blue-500 hover:underline">Voir les logs</a></td></tr>
       </tbody>
     </table>
 
@@ -108,13 +109,17 @@ const html = `<!DOCTYPE html>
             backgroundColor: ["#16a34a", "#dc2626", "#eab308"]
           }]
         },
-        options: { plugins: { legend: { position: 'bottom' } } }
+        options: {
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
       });
     </script>
 
-    <!-- 📊 Lien rapport Allure -->
+    <!-- 🔍 Lien rapport Allure -->
     <div class="text-center mt-10">
-      <a href="allure-reports/report/index.html" class="inline-flex items-center justify-center gap-3 px-8 py-4 text-white text-lg font-semibold bg-purple-600 hover:bg-purple-700 rounded-xl transition">
+      <a href="allure-reports/report/index.html" class="inline-flex items-center justify-center gap-3 px-8 py-4 text-white text-lg font-semibold bg-purple-600 hover:bg-purple-700 rounded-xl transition shadow">
         <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
         📊 Consulter le rapport Allure
       </a>
