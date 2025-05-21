@@ -1,7 +1,7 @@
 import test, { chromium, expect } from "@playwright/test";
 
 test("Ouvrir un vounel onglet avec playwright", async ({}) => {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page1 = await context.newPage();
 
