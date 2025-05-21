@@ -1,5 +1,7 @@
 name: Playwright Tests with Allure + GitHub Pages
 
+# 📦 Ce workflow s'exécute :
+# - à chaque push ou pull request sur la branche `main`
 on:
   push:
     branches: [ main ]
@@ -7,45 +9,54 @@ on:
     branches: [ main ]
 
 jobs:
+  # 🔧 JOB PRINCIPAL : Exécution des tests Playwright + génération du rapport Allure
   test:
     runs-on: ubuntu-latest
+
+    # Utilisation de l’image officielle Playwright (contient déjà Chromium, Firefox, WebKit, etc.)
     container:
       image: mcr.microsoft.com/playwright:v1.38.1-focal
 
     steps:
-      # 1. Récupère le code source de la branche
+      # 1️⃣ Récupère le code source de ton dépôt
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Installe Java (requis pour Allure CLI)
+      # 2️⃣ Installe Java (nécessaire pour faire fonctionner la CLI Allure)
       - name: Install Java (for Allure)
         run: |
           apt-get update -y
           apt-get install -y default-jdk
+          # Exporte JAVA_HOME pour que Allure fonctionne correctement
           echo "JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))" >> $GITHUB_ENV
 
-      # 3. Installe les dépendances (npm + CLI Allure)
+      # 3️⃣ Installe les dépendances du projet + Allure CLI
       - name: Install dependencies
         run: |
-          npm ci
-          npm install -g allure-commandline
+          npm ci                              # installation propre depuis package-lock.json
+          npm install -g allure-commandline   # installe la CLI Allure globalement
 
-      # 4. Exécute les tests Playwright (échouent ou non)
+      # ⚠️ 3️⃣.5️⃣ Étape CRUCIALE : Nettoie les anciens résultats Allure
+      # Sinon, les fichiers des runs précédents peuvent fausser la durée totale du test
+      - name: Cleanup previous Allure results
+        run: rm -rf allure-results
+
+      # 4️⃣ Lance les tests Playwright (même si ça échoue, on veut continuer pour générer les rapports)
       - name: Run Playwright tests
         run: npm run test
         continue-on-error: true
 
-      # 5. Génére le rapport Allure dans ./public/allure-reports/report
+      # 5️⃣ Génére le rapport Allure à partir des fichiers JSON dans `allure-results/`
       - name: Generate Allure report
-        if: always()
+        if: always()   # Toujours exécuter cette étape même si les tests échouent
         run: npm run report:allure
 
-      # 6. Génère dynamiquement un fichier index.html de résumé
+      # 6️⃣ Génére dynamiquement un fichier `index.html` de résumé visuel (Playwright custom report)
       - name: Generate summary index.html
         if: always()
         run: npm run report:index
 
-      # 7. Sauvegarde le dossier ./public comme artefact pour déploiement
+      # 7️⃣  Sauvegarde le dossier ./public (qui contient les rapports HTML) comme artefact pour déploiement
       - name: Upload public artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,24 +64,27 @@ jobs:
           name: public
           path: ./public
 
+  # 🌍 JOB DE DÉPLOIEMENT : déploie les rapports HTML sur GitHub Pages
   deploy:
-    needs: test
+    needs: test   # ⛓️ Ce job dépend du job "test"
     runs-on: ubuntu-latest
+
+    # ⛔ On ne déploie que si on est sur la branche main (évite le déploiement en pull request)
     if: github.ref == 'refs/heads/main'
 
     steps:
-      # 1. Récupère le code (utile pour le contexte)
+      # 1️⃣ Récupère le dépôt (utile pour contexte ou liens GitHub)
       - name: Checkout
         uses: actions/checkout@v3
 
-      # 2. Récupère les fichiers générés dans le dossier ./public
+      # 2️⃣ Récupère les fichiers générés dans le dossier ./public
       - name: Download public artifact
         uses: actions/download-artifact@v4
         with:
           name: public
           path: ./public
 
-      # 3. Déploie ./public sur la branche gh-pages
+      # 3️⃣ Déploie le contenu du dossier `./public` sur la branche `gh-pages`
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -78,7 +92,7 @@ jobs:
           publish_dir: ./public
           publish_branch: gh-pages
 
-      # 4. Ajoute les liens vers les rapports dans le résumé GitHub Actions
+      # 4️⃣ Ajoute les liens vers les rapports dans le résumé de la run GitHub Actions
       - name: Add landing page link
         run: |
           echo "🏠 [Page d’accueil](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html)" >> $GITHUB_STEP_SUMMARY

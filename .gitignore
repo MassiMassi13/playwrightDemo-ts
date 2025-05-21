@@ -1,8 +1,11 @@
 
 # Playwright
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-/public/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+public/
+
+# Allure
+allure-results/
