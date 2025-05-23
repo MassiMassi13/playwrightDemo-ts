@@ -121,7 +121,7 @@ const html = `<!DOCTYPE html>
     <!-- 📈 Résumé Graphique -->
     <section class="bg-white p-3 rounded shadow mb-3">
       <h3 class="text-lg font-semibold text-gray-700 mb-4">📊 Répartition des Résultats</h3>
-      <canvas id="chart-pie" class="w-full h-48"></canvas>
+      <canvas id="chart-pie" class="w-full h-10"></canvas>
     </section>
 
     <!-- 🔧 Détails CI/CD -->
@@ -146,6 +146,10 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
     </section>
+    <!-- 🔗 Lien vers le rapport Allure -->
+    <div class="mt-10 text-center">
+      <a href="./allure-reports/report/index.html" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-full shadow hover:bg-indigo-700 transition">🔍 Voir le rapport Allure complet</a>
+    </div>
 
     <!-- 🦶 Pied de page -->
     <footer class="text-center text-xs text-gray-500 pt-10">
