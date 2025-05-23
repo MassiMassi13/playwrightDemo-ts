@@ -42,13 +42,17 @@ if (fs.existsSync(summaryFile)) {
   }
 }
 
-// 📈 Statistiques de test
+// 📈 Récupération des Statistiques de test
 const passed = summary?.statistic?.passed ?? 0;
 const failed = summary?.statistic?.failed ?? 0;
 const skipped = summary?.statistic?.skipped ?? 0;
 const total = passed + failed + skipped;
+
+// ✅ Calcul du taux de réussite si possible
 const passRate = total > 0 ? ((passed / total) * 100).toFixed(1) : null;
+// Pour affichage clair : "92.3 %" ou "–"
 const passRateDisplay = passRate !== null ? `${passRate} %` : "–";
+// ⏱️ Formate la durée en minutes/secondes si dispo
 const duration = summary?.time?.duration
   ? Math.round(summary.time.duration / 1000)
   : 0;
@@ -115,9 +119,9 @@ const html = `<!DOCTYPE html>
     </section>
 
     <!-- 📈 Résumé Graphique -->
-    <section class="bg-white p-6 rounded shadow mb-6">
+    <section class="bg-white p-3 rounded shadow mb-3">
       <h3 class="text-lg font-semibold text-gray-700 mb-4">📊 Répartition des Résultats</h3>
-      <canvas id="chart-pie" class="w-full h-64"></canvas>
+      <canvas id="chart-pie" class="w-full h-48"></canvas>
     </section>
 
     <!-- 🔧 Détails CI/CD -->
