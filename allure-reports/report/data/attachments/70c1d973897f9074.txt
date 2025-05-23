@@ -1,7 +1,0 @@
-{ gender: 'Male', civility: 'Monsieur', firstName: 'Cameron' }
-Nom généré Par la lib fakers : Spinka
-🚀 Employé généré :  - Male 
-🔹 Status : Part-Time Internship 
-🔹 Include : Current and Past Employees 
-🔹 Job Title : QA Engineer 
-🔹 Sub Unit : Administration
