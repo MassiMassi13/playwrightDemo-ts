@@ -37,11 +37,11 @@ test("🧪 API - Get All Products - should return a list of products with valid 
       // ➤ Vérification des propriétés imbriquées : category → category et usertype
       expect(product.category).toHaveProperty('category');
       expect(product.category.usertype).toHaveProperty('usertype');
+      console.log("📊  Liste total des produits retournés :", products);
     }
   });
 
   // 🖨️ Étape 5 : Log d'information
   await test.step("🖨️ Log number of returned products", async () => {
-    console.log("📚 Nombre total de produits retournés :", products.length);
   });
 });
