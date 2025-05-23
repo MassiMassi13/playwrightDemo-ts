@@ -119,7 +119,7 @@ const html = `<!DOCTYPE html>
     </section>
 
     <!-- 📈 Résumé Graphique -->
-    <section class="bg-white p-3 rounded shadow mb-3 max-w-s mx-auto">
+    <section class="bg-white p-3 rounded shadow mb-3 min-w-s mx-auto">
       <h3 class="text-base font-medium text-gray-700 mb-2 text-center">📊 Répartition des Résultats</h3>
       <canvas id="chart-pie" class="w-full h-20"></canvas>
     </section>

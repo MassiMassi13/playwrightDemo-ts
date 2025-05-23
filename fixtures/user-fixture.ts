@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { APIClient } from '../src/utils/api-clients';
+import { APIClient } from '../src/utils/api-client';
 import { LoginAutoexePage } from '../src/page-objects/automationExe/LoginAutoexePage';
 
 type UserFixture = {

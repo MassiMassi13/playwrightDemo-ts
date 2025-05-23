@@ -11,7 +11,7 @@
     "grepInvert": null,
     "maxFailures": 0,
     "metadata": {
-      "actualWorkers": 2
+      "actualWorkers": 1
     },
     "preserveOutput": "always",
     "reporter": [
@@ -65,92 +65,80 @@
   },
   "suites": [
     {
-      "title": "loginAutoexe.spec.ts",
-      "file": "loginAutoexe.spec.ts",
+      "title": "api\\get-all-products.spec.ts",
+      "file": "api/get-all-products.spec.ts",
       "column": 0,
       "line": 0,
-      "specs": [],
-      "suites": [
+      "specs": [
         {
-          "title": "Login E2E Site automationexercise ",
-          "file": "loginAutoexe.spec.ts",
-          "line": 5,
-          "column": 6,
-          "specs": [
+          "title": "🧪 API - Get All Products - should return a list of products with valid structure",
+          "ok": true,
+          "tags": [],
+          "tests": [
             {
-              "title": "should login with valid credentials",
-              "ok": true,
-              "tags": [],
-              "tests": [
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
                 {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
+                  "workerIndex": 0,
+                  "status": "passed",
+                  "duration": 1741,
+                  "errors": [],
+                  "stdout": [
                     {
-                      "workerIndex": 0,
-                      "status": "passed",
-                      "duration": 15815,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-05-23T15:40:45.042Z",
-                      "attachments": []
+                      "text": "📦 34 produits reçus.\n"
+                    },
+                    {
+                      "text": "📚 Nombre total de produits retournés : \u001b[33m34\u001b[39m\n"
                     }
                   ],
-                  "status": "expected"
-                }
-              ],
-              "id": "a86c76700ca0027ef0b2-c325fc104fb56e2a2fe9",
-              "file": "loginAutoexe.spec.ts",
-              "line": 6,
-              "column": 7
-            },
-            {
-              "title": "should fail login with invalid password",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
                     {
-                      "workerIndex": 1,
-                      "status": "passed",
-                      "duration": 39306,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2025-05-23T15:40:45.035Z",
-                      "attachments": []
+                      "title": "🔧 Create API request context",
+                      "duration": 25
+                    },
+                    {
+                      "title": "🏗️ Instantiate ProductsAPI",
+                      "duration": 0
+                    },
+                    {
+                      "title": "📡 Call GET /productsList",
+                      "duration": 939
+                    },
+                    {
+                      "title": "✅ Validate response structure",
+                      "duration": 743
+                    },
+                    {
+                      "title": "🖨️ Log number of returned products",
+                      "duration": 2
                     }
                   ],
-                  "status": "expected"
+                  "startTime": "2025-05-23T17:22:49.992Z",
+                  "attachments": []
                 }
               ],
-              "id": "a86c76700ca0027ef0b2-ce964d02cac81865fabd",
-              "file": "loginAutoexe.spec.ts",
-              "line": 14,
-              "column": 5
+              "status": "expected"
             }
-          ]
+          ],
+          "id": "226eece2460b0efe7c33-0b491e9ecf45c242a703",
+          "file": "api/get-all-products.spec.ts",
+          "line": 6,
+          "column": 5
         }
       ]
     }
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-05-23T15:40:42.179Z",
-    "duration": 45350.147,
-    "expected": 2,
+    "startTime": "2025-05-23T17:22:48.165Z",
+    "duration": 3669.398,
+    "expected": 1,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0
