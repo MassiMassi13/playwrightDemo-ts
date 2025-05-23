@@ -10,7 +10,7 @@ const sha = (process.env.GITHUB_SHA || "abc1234").slice(0, 7);
 const workflow = process.env.GITHUB_WORKFLOW || "CI";
 const runId = process.env.GITHUB_RUN_ID;
 const actor = process.env.GITHUB_ACTOR || "ci-user";
-const jobStatus = process.env.JOB_STATUS || "unknown";
+const jobStatus = process.env.jobStatus || "unknown";
 
 // 🕒 Format de la date d’exécution
 const runDate = new Date().toLocaleString("fr-FR", {
