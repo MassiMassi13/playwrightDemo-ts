@@ -1,0 +1,7 @@
+{ gender: 'Female', civility: 'Madame', firstName: 'Ernestine' }
+Nom généré Par la lib fakers : Hettinger
+🚀 Employé généré :  - Male 
+🔹 Status : Part-Time Internship 
+🔹 Include : Current and Past Employees 
+🔹 Job Title : QA Engineer 
+🔹 Sub Unit : Engineering
