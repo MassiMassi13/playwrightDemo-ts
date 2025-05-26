@@ -10,7 +10,7 @@ test("🧪 API - Get All Products - should return a list of products with valid 
      AllureUtils.initSuite("Test Api","Récupérer une liste de produits","Get All");
      AllureUtils.addTags("Api", "sanity","Get All");
      AllureUtils.setSeverity("critical");
-     AllureUtils.addLink("URL : "," https://automationexercise.com/api/productsList ", "link");
+     AllureUtils.addLink("URL Get All "," https://automationexercise.com/api/productsList ", "link");
   // 🧱 Étape 1 : Création d’un contexte d’appel API isolé
   const context = await test.step("🔧 Create API request context", async () => {
     return await request.newContext();
@@ -44,12 +44,12 @@ test("🧪 API - Get All Products - should return a list of products with valid 
       // ➤ Vérification des propriétés imbriquées : category → category et usertype
       expect(product.category).toHaveProperty('category');
       expect(product.category.usertype).toHaveProperty('usertype');
-      console.log("📊  Liste total des produits retournés :", products);
-      AllureUtils.attachJson(" 🧾 Liste des produits : ",products)
     }
-  });
+});
 
-  // 🖨️ Étape 5 : Log d'information
-  await test.step("🖨️ Log number of returned products", async () => {
+// 🖨️ Étape 5 : Log d'information
+await test.step("🖨️ Log number of returned products", async () => {
+    AllureUtils.attachJson(" 🧾 Liste des produits : ",products)
+    console.log("📊  Liste total des produits retournés : ", products);     
   });
 });
