@@ -1,4 +1,20 @@
-import { parentSuite, suite, subSuite  ,step, attachment, link, description, epic, feature, story, tags, severity, owner, label, parameter} from "allure-js-commons";
+import {
+  parentSuite,
+  suite,
+  subSuite,
+  step,
+  attachment,
+  link,
+  description,
+  epic,
+  feature,
+  story,
+  tags,
+  severity,
+  owner,
+  label,
+  parameter,
+} from "allure-js-commons";
 import { Page } from "@playwright/test";
 
 export class AllureUtils {
@@ -130,5 +146,29 @@ export class AllureUtils {
    */
   static setStory(storyName: string) {
     story(storyName);
+  }
+
+  /**
+   * 📌 Exécute un bloc de code dans une étape Allure nommée.
+   *
+   * Cette méthode encapsule une action ou une vérification importante dans un `step` Allure,
+   * ce qui permet de structurer le rapport avec des étapes clairement identifiées et hiérarchisées.
+   *
+   * ✅ Bonnes pratiques :
+   * - Utiliser cette méthode pour chaque action métier ou assertion clé dans un test.
+   * - Fournir un nom d'étape clair, compréhensible par un non-développeur (ex: QA, PO).
+   *
+   * @template T Le type de la valeur retournée par la fonction `body`.
+   * @param name Le nom lisible de l'étape affiché dans le rapport Allure.
+   * @param body Une fonction asynchrone qui contient le code à exécuter dans cette étape.
+   * @returns La valeur retournée par la fonction `body`, avec traçabilité dans le rapport.
+   *
+   * 📦 Exemple :
+   * await AllureUtils.step('🧪 Vérifier l’affichage du tableau de bord', async () => {
+   *   await dashboardPage.expectVisible();
+   * });
+   */
+  static async step<T>(name: string, body: () => Promise<T>): Promise<T> {
+    return await step(name, body);
   }
 }
