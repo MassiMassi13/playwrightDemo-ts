@@ -78,11 +78,7 @@ export class AllureUtils {
   /**
    * Ajoute une capture d’écran uniquement en cas d’erreur
    */
-  static async attachScreenshotOnFailure(
-    name: string,
-    page: Page,
-    condition: boolean
-  ) {
+  static async attachScreenshotOnFailure(name: string,page: Page,condition: boolean) {
     if (condition) {
       await this.attachScreenshot(name, page);
     }
@@ -105,11 +101,7 @@ export class AllureUtils {
   /**
    * Ajoute un lien externe (ex: lien Jira, documentation, ticket)
    */
-  static addLink(
-    name: string,
-    url: string,
-    type: "issue" | "tms" | "link" = "link"
-  ) {
+  static addLink(name: string,url: string, type: "issue" | "tms" | "link" = "link") {
     link(url, name, type);
   }
 

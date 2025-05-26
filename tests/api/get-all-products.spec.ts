@@ -1,9 +1,16 @@
 import { test, expect, request } from "@playwright/test";
 import { ProductsAPIPage } from "../../src/page-objects/automationExe/api/ProductsAPIPage";
 import { expectedProductKeys } from "../../src/test-data/qa/api/products.fixture";
+import { AllureUtils } from "../../src/utils/allure.utils";
 
 // 🎯 Test principal : récupération et validation des produits
 test("🧪 API - Get All Products - should return a list of products with valid structure", async () => {
+
+     AllureUtils.setDescription("Ce test vérifie la récupération de tous les produits avec la méthode Get All.");
+     AllureUtils.initSuite("Test Api","Récupérer une liste de produits","Get All");
+     AllureUtils.addTags("Api", "sanity","Get All");
+     AllureUtils.setSeverity("critical");
+     AllureUtils.addLink("URL : "," https://automationexercise.com/api/productsList ", "link");
   // 🧱 Étape 1 : Création d’un contexte d’appel API isolé
   const context = await test.step("🔧 Create API request context", async () => {
     return await request.newContext();
@@ -38,6 +45,7 @@ test("🧪 API - Get All Products - should return a list of products with valid 
       expect(product.category).toHaveProperty('category');
       expect(product.category.usertype).toHaveProperty('usertype');
       console.log("📊  Liste total des produits retournés :", products);
+      AllureUtils.attachJson(" 🧾 Liste des produits : ",products)
     }
   });
 
