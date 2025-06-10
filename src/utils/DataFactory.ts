@@ -1,37 +1,34 @@
 import { faker } from "@faker-js/faker";
-import moment from 'moment';
+import moment from "moment";
 
-export  class DataFactory {
-
-
-  static getRandomGender(): "Male" | "Female"  {
-    const genders: ("Male" | "Female" )[] = ["Male", "Female"];
+export class DataFactory {
+  static getRandomGender(): "Male" | "Female" {
+    const genders: ("Male" | "Female")[] = ["Male", "Female"];
     const randomIndex = Math.floor(Math.random() * genders.length);
     return genders[randomIndex];
   }
-  static getFirstName(gender: "Male" | "Female" ): string {
+  static getFirstName(gender: "Male" | "Female"): string {
     switch (gender) {
       case "Male":
         return faker.person.firstName("male");
       case "Female":
         return faker.person.firstName("female");
-      
     }
   }
 
-  static getFirstNamee(gender: "Male" | "Female" ): string {
+  static getFirstNamee(gender: "Male" | "Female"): string {
     return faker.person.firstName(gender === "Male" ? "male" : "female");
   }
 
   static getFirstName1(): string {
-    
-    const genders: ("Male" | "Female" )[] = ["Male", "Female"];
-    
+    const genders: ("Male" | "Female")[] = ["Male", "Female"];
+
     const randomIndex = Math.floor(Math.random() * genders.length);
     const randomGender = genders[randomIndex];
-    
-    return faker.person.firstName(randomGender.toLowerCase() as 'female' | 'male');
-    
+
+    return faker.person.firstName(
+      randomGender.toLowerCase() as "female" | "male"
+    );
   }
 
   static getLastName(): string {
@@ -43,14 +40,16 @@ export  class DataFactory {
   }
 
   static getEmail(): string {
-    return faker.internet.email();
+    return faker.internet.email().toLowerCase();
+  }
+  static getPassword(): string {
+    return faker.internet.password({ length: 12, memorable: true });
   }
 
   static getBirthDate(): string {
     const birthDate = faker.date.birthdate({ min: 18, max: 80, mode: "age" });
     return birthDate.toLocaleDateString("fr-FR");
   }
-
 
   static getNationalId(): string {
     return faker.string.numeric(13);
@@ -176,13 +175,25 @@ export  class DataFactory {
     return faker.number.int({ min: 1, max: 40 });
   }
 
-
   static getRegistrationDate(): string {
     return this.getFormattedDate("DD/MM/YYYY");
   }
 
   // Méthodes utilitaires
-  private static getFormattedDate(format: string = "YYYY-MM-DD", daysOffset: number = 0): string {
+  private static getFormattedDate(
+    format: string = "YYYY-MM-DD",
+    daysOffset: number = 0
+  ): string {
     return moment().add(daysOffset, "days").format(format);
+  }
+
+  static generateUser() {
+    return {
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      email: faker.internet.email(),
+      password: faker.internet.password({ length: 12, memorable: true }),
+      date: "10101986",
+    };
   }
 }

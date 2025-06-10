@@ -1,27 +1,27 @@
 
 
-const COOKIE_NOTICE_ID_LOCATOR = "xpath//label[1]"
+// const COOKIE_NOTICE_ID_LOCATOR = "xpath//label[1]"
 
 
-export class createNewAdhereerent {
+// export class createNewAdhereerent {
 
-    constructor(page) {
-        this.page = page
-        this.cookieNotice = page.locator(COOKIE_NOTICE_ID_LOCATOR)
-        this.cookieButton = page.getByText(COOKIE_NOTICE_ACCEPT_BUTTON_TEXT)
-        this.closePopinButton = page.locator(POPIN_BUTTON_CSS_LOCATOR)
-        this.popinPanel = page.locator(POPIN_PANEL_CSS_LOCATOR)
-        this.mobileNotificationNotice = page.locator(MOBILE_NOTIFICATION_NOTICE_LOCATOR)
-        this.closeNotificationNoticeButton = page.getByText(NOTIFICATION_DELAY_BUTTON_T
+//     constructor(page) {
+//         this.page = page
+//         this.cookieNotice = page.locator(COOKIE_NOTICE_ID_LOCATOR)
+//         this.cookieButton = page.getByText(COOKIE_NOTICE_ACCEPT_BUTTON_TEXT)
+//         this.closePopinButton = page.locator(POPIN_BUTTON_CSS_LOCATOR)
+//         this.popinPanel = page.locator(POPIN_PANEL_CSS_LOCATOR)
+//         this.mobileNotificationNotice = page.locator(MOBILE_NOTIFICATION_NOTICE_LOCATOR)
+//         this.closeNotificationNoticeButton = page.getByText(NOTIFICATION_DELAY_BUTTON_T
 
 
-        }
+//         }
 
-        async clickOnAspirateurs() {
-            await this.cookieNotice.click()
+//         async clickOnAspirateurs() {
+//             await this.cookieNotice.click()
            
     
-        }
+//         }
 
 
-}
+// }

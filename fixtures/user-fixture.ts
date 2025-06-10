@@ -1,6 +1,6 @@
 import { test as base } from '@playwright/test';
 import { APIClient } from '../src/utils/api-client';
-import { LoginAutoexePage } from '../src/page-objects/automationExe/LoginAutoexePage';
+import { LoginAutoexePage } from '../src/page-objects/automationExe/e2e/LoginAutoexePage';
 
 type UserFixture = {
   user: { email: string; password: string };

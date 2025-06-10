@@ -50,10 +50,28 @@ export default defineConfig({
 
     // Capturer des captures d'écran uniquement en cas d'échec
     screenshot: 'only-on-failure',
-    // 👈 indispensable en CI.
-    headless: true, 
+    //  indispensable en CI.
+    //headless: true, 
+    // Headless en CI, visible en local
+    headless: process.env.CI ? true : false, 
 
     //viewport: { width: 1280, height: 720 },
+
+    //  Contournement détection bot
+    launchOptions: {
+      args: [
+       '--start-maximized',
+       '--disable-blink-features=AutomationControlled',
+       '--no-sandbox',
+       '--disable-setuid-sandbox',
+      ],
+    },
+
+    //  Imitation d'un vrai navigateur 🧠
+    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/113 Safari/537.36',
+    viewport: { width: 1280, height: 800 },
+    javaScriptEnabled: true,
+
   },
 
   /* Configure projects for major browsers */
