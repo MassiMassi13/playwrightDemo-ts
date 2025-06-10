@@ -1,0 +1,7 @@
+{ gender: 'Male', civility: 'Monsieur', firstName: 'Virgil' }
+Nom généré Par la lib fakers : Schiller
+🚀 Employé généré :  - Female 
+🔹 Status : Full-Time Contract 
+🔹 Include : Past Employees Only 
+🔹 Job Title : Project Manager 
+🔹 Sub Unit : Development
