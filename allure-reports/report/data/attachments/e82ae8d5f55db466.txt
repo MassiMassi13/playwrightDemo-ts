@@ -1,0 +1,5 @@
+ 🛒 la catégorie choisit est bien :  Tshirts
+⛳ Catégorie aléatoire choisie pour vérification dans le panier : Tshirts
+🔍 Catégorie trouvée dans le panier : "Men > Tshirts"
+✅ Correspondance trouvée : "Men > Tshirts" contient "Tshirts"
+✅ Un produit contenant la catégorie "Tshirts" a été trouvé dans le panier.
