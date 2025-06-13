@@ -1,0 +1,5 @@
+ 🛒 la catégorie choisit est bien :  Dress
+⛳ Catégorie aléatoire choisie pour vérification dans le panier : Dress
+🔍 Catégorie trouvée dans le panier : "Women > Dress"
+✅ Correspondance trouvée : "Women > Dress" contient "Dress"
+✅ Un produit contenant la catégorie "Dress" a été trouvé dans le panier.
