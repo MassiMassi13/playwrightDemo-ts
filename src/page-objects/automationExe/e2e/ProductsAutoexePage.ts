@@ -18,6 +18,11 @@ export class ProductsAutoexePage {
     this.viewCart = page.getByRole('link', { name: 'View Cart' });
   }
 
+  // getter
+  get selectedCategory(): string {
+    return this.randomCategory;
+  }
+
   async fillFieldSearchProduct() {
     this.randomCategory = getRandomElement(categories);
     await this.searchProductField.pressSequentially(this.randomCategory);
