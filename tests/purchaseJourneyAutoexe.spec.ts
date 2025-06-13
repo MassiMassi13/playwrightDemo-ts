@@ -65,12 +65,12 @@ test( "✔ Connexion d’un utilisateur existant avec des identifiants valides",
     
       await cartAutoexePage.fillTextArea();
       await cartAutoexePage.clickPlaceOrder();
-      await AllureUtils.attachScreenshot("Dashboard après connexion", page);
     });
-
+    
     await test.step("8. Choix d’une méthode de paiement fictive et confirmation de la commande ", async () => {
       await page.pause();
       await paymentAutoexePage.fillCardInformation();
+      await AllureUtils.attachScreenshot("Page de paiement ", page);
  
     });
 
