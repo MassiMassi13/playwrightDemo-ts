@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { fakerFR as faker } from "@faker-js/faker";
 import moment from "moment";
 
 export class DataFactory {
@@ -128,6 +128,27 @@ export class DataFactory {
   static getRib(): string {
     return faker.finance.iban();
   }
+  static getValidCardNumber(): string {
+    return faker.finance.creditCardNumber('visa');
+  }
+
+  static getCvc(): string {
+    return faker.finance.creditCardCVV();
+  }
+
+  static getExpirationMonth(): string {
+    // Retourne un mois entre 01 et 12
+    return faker.date.future().getMonth().toString().padStart(2, '0');
+  }
+
+  static getExpirationYear(): string {
+    return faker.date.future().getFullYear().toString();
+  }
+
+  static getNameOnCard(): string {
+    return faker.person.fullName();
+  }
+
 
   static getInsuranceNumber(): string {
     return faker.string.numeric(15);

@@ -1,12 +1,13 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { DataFactory } from "../../../../src/utils/DataFactory";
+import { CardInfoBuilder } from "../../../test-data/qa/CardInfoBuilder";
 
 export class PaymentAutoexePage {
   private nameOnCard: Locator;
   private cardNumber: Locator;
   private cvc: Locator;
-  private experationMonth: Locator;
-  private experationYear: Locator;
+  private expirationMonth: Locator;
+  private expirationYear: Locator;
   private confirmOrderButton: Locator;
   private orderPlacedMessage: Locator;
   private continueButton: Locator;
@@ -16,8 +17,8 @@ export class PaymentAutoexePage {
     this.nameOnCard = page.locator('input[name="name_on_card"]');
     this.cardNumber = page.locator('input[name="card_number"]');
     this.cvc = page.getByRole("textbox", { name: "ex." });
-    this.experationMonth = page.getByRole("textbox", { name: "MM" });
-    this.experationYear = page.getByRole("textbox", { name: "YYYY" });
+    this.expirationMonth = page.getByRole("textbox", { name: "MM" });
+    this.expirationYear = page.getByRole("textbox", { name: "YYYY" });
     this.confirmOrderButton = page.getByRole("button", {name: "Pay and Confirm Order"});
     this.orderPlacedMessage = page.getByText("Order Placed!");
     this.continueButton = page.getByRole("link", { name: "Continue" });
@@ -25,11 +26,16 @@ export class PaymentAutoexePage {
   }
 
   async fillCardInformation() {
-    await this.nameOnCard.fill(DataFactory.getDirectorFirstName());
-    await this.cardNumber.fill("1234567");
-    await this.cvc.fill("123");
-    await this.experationMonth.fill("11");
-    await this.experationYear.fill("2026");
+
+    //const cardInfo1 = CardInfoBuilder.create().withCardNumber("123456").withCvc("123").withExpiration("11", "2026").build();
+    const cardInfo = CardInfoBuilder.create().build();
+    console.log("Voiçi les informations de card Infos ; " ,cardInfo)
+  
+    await this.nameOnCard.fill(cardInfo.nameOnCard);
+    await this.cardNumber.fill(cardInfo.cardNumber);
+    await this.cvc.fill(cardInfo.cvc);
+    await this.expirationMonth.fill(cardInfo.expirationMonth);
+    await this.expirationYear.fill(cardInfo.expirationYear);
     await this.confirmOrderButton.click();
   }
 
