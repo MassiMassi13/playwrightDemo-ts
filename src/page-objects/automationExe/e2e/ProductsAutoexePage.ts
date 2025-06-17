@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { getRandomElement } from "../../../utils/randomUtils";
-import { categories } from "../../../test-data/qa/Categories";
+import { Categories } from "../../../test-data/qa/Categories";
 
 export class ProductsAutoexePage {
   private searchProductField: Locator;
@@ -24,7 +24,7 @@ export class ProductsAutoexePage {
   }
 
   async fillFieldSearchProduct() {
-    this.randomCategory = getRandomElement(categories);
+    this.randomCategory = getRandomElement(Categories);
     await this.searchProductField.pressSequentially(this.randomCategory);
     console.log(" 🛒 la catégorie choisit est bien : ",this.randomCategory);
   }
