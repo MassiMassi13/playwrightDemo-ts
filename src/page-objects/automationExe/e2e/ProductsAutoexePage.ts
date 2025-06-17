@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from "@playwright/test";
 import { getRandomElement } from "../../../utils/randomUtils";
-import { Categories } from "../../../test-data/qa/Categories";
+import { Categories } from "../../../test-data";
 
 export class ProductsAutoexePage {
   private searchProductField: Locator;
