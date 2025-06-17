@@ -1,23 +1,15 @@
-import { test } from "../fixtures/user-fixture";
-import { CartAutoexePage } from "../src/page-objects/automationExe/e2e/CartAutoexePage";
-import { HomeAutoexePage } from "../src/page-objects/automationExe/e2e/HomeAutoexePage";
-import { ProductsAutoexePage } from "../src/page-objects/automationExe/e2e/ProductsAutoexePage";
-import { PaymentAutoexePage } from "../src/page-objects/automationExe/e2e/PaymentAutoexePage";
+import { test } from "../fixtures/purshaseFixture";
 import { AllureUtils } from "../src/utils/allure.utils";
 
 
 test( "✔ Connexion d’un utilisateur existant avec des identifiants valides", {tag: ["@login", "@sanity"],
     annotation: [{ type: "Jira Story", description: "https://jira.com/AutomationExe" } ] },
-  async ({ page, user, loginAutoexePage }) => {
+  async ({ page, user, loginAutoexePage, homeAutoexePage, productsAutoexePage, cartAutoexePage, paymentAutoexePage }) => {
     AllureUtils.initSuite("AutomationExe Project", "AutomationExe","Parcours d'achat" );
     AllureUtils.setDescription("Ce test vérifie le bon déroulement d'un parcous d'achat complet." );
     AllureUtils.addTags("purchase", "sanity");
     AllureUtils.setSeverity("critical");
-    const homeAutoexePage = new HomeAutoexePage(page);
-    const productsAutoexePage = new ProductsAutoexePage(page);
-
-    const cartAutoexePage = new CartAutoexePage(page);
-    const paymentAutoexePage = new PaymentAutoexePage(page);
+    
     
     await loginAutoexePage.goto();
     
@@ -70,7 +62,7 @@ test( "✔ Connexion d’un utilisateur existant avec des identifiants valides",
     await test.step("8. Choix d’une méthode de paiement fictive et confirmation de la commande ", async () => {
       await page.pause();
       await paymentAutoexePage.fillCardInformation();
-      await AllureUtils.attachScreenshot("Page de paiement ", page);
+      await AllureUtils.attachScreenshot("✅ Page de paiement OK", page);
  
     });
 
