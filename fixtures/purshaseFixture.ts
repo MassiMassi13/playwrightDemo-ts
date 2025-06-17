@@ -46,7 +46,7 @@ export const test = base.extend<Fixtures>({
     const instance = new ProductsAutoexePage(page);
     await use(instance);
   },
-  
+
 });
 
 export { expect } from "@playwright/test";
