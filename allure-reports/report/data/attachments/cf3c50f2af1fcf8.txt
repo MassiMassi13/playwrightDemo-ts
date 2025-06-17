@@ -1,7 +1,0 @@
-{ gender: 'Female', civility: 'Madame', firstName: 'Kathleen' }
-Nom généré Par la lib fakers : Fay
-🚀 Employé généré :  - Female 
-🔹 Status : Full-Time Permanent 
-🔹 Include : Past Employees Only 
-🔹 Job Title : Project Manager 
-🔹 Sub Unit : Engineering
