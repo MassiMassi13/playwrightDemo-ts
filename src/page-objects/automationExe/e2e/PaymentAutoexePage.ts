@@ -27,6 +27,7 @@ export class PaymentAutoexePage {
 
   async fillCardInformation() {
 
+    //
     //const cardInfo1 = CardInfoBuilder.create().withCardNumber("123456").withCvc("123").withExpiration("11", "2026").build();
     const cardInfo = CardInfoBuilder.create().build();
     console.log("Voiçi les informations de card Infos ; " ,cardInfo)
