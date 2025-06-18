@@ -1,0 +1,12 @@
+ 🛒 la catégorie choisit est bien :  Tops
+⛳ Catégorie aléatoire choisie pour vérification dans le panier : Tops
+🔍 Catégorie trouvée dans le panier : "Women > Tops"
+✅ Correspondance trouvée : "Women > Tops" contient "Tops"
+✅ Un produit contenant la catégorie "Tops" a été trouvé dans le panier.
+Voiçi les informations de card Infos ;  CardInfo {
+  nameOnCard: 'Childebert Chevalier',
+  cardNumber: '4746-8096-2608-7691',
+  cvc: '626',
+  expirationMonth: '06',
+  expirationYear: '2026'
+}
