@@ -2,15 +2,14 @@ import { test } from "../fixtures/purshaseFixture";
 import { AllureUtils } from "../src/utils/allure.utils";
 
 
-test( "✔ Connexion d’un utilisateur existant avec des identifiants valides", {tag: ["@login", "@sanity"],
+test( "✔ Connexion d’un utilisateur existant avec des identifiants valides", {tag: ["@smoke", "@sanity"],
     annotation: [{ type: "Jira Story", description: "https://jira.com/AutomationExe" } ] },
   async ({ page, user, loginAutoexePage, homeAutoexePage, productsAutoexePage, cartAutoexePage, paymentAutoexePage }) => {
     AllureUtils.initSuite("AutomationExe Project", "AutomationExe","Parcours d'achat" );
     AllureUtils.setDescription("Ce test vérifie le bon déroulement d'un parcous d'achat complet." );
     AllureUtils.addTags("purchase", "sanity");
     AllureUtils.setSeverity("critical");
-    
-    
+        
     await loginAutoexePage.goto();
     
     await test.step("1. Connexion et vérification de la bonne authentification", async () => {

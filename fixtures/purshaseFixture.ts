@@ -23,8 +23,8 @@ export const test = base.extend<Fixtures>({
   },
 
   loginAutoexePage: async ({ page }, use) => {
-    const loginAutoexePage = new LoginAutoexePage(page);
-    await use(loginAutoexePage);
+    const instance = new LoginAutoexePage(page);
+    await use(instance);
   },
 
   homeAutoexePage: async ({ page }, use) => {

@@ -92,7 +92,10 @@ export class DataFactory {
   static getWebsite(): string {
     return faker.internet.url();
   }
-
+ 
+  static getStateFrance(): string {
+    return faker.location.state();
+  }
   static getAddress(): string {
     return faker.location.streetAddress();
   }

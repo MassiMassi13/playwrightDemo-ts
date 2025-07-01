@@ -1,27 +1,35 @@
 import { Page , Locator, expect} from '@playwright/test';
+import  {getRandomElement} from '../../../utils/randomUtils'
 
 export class LoginAutoexePage {
 
-    // Déclaration des éléments de la page
     private emailInput: Locator;
     private passwordInput: Locator;
     private loginButton: Locator;
     private logoutLink: Locator;
     private loginErrorMessage: Locator;
+    private NameSignup :Locator;
+    private emailSignup : Locator;
+    private signupButton: Locator;
+    
   
     constructor(private page: Page) {
-      // Initialisation des locators dans le constructeur
+      
       this.emailInput = page.locator('input[data-qa="login-email"]');
       this.passwordInput = page.locator('input[data-qa="login-password"]');
       this.loginButton = page.locator('button[data-qa="login-button"]');
       this.logoutLink = page.locator('a[href="/logout"]');
       this.loginErrorMessage = page.locator('p:has-text("Your email or password is incorrect!")');
+      this.NameSignup = page.locator('input[data-qa="signup-name"]');
+      this.emailSignup = page.locator('input[data-qa="signup-email"]');
+      this.signupButton = page.locator('button[data-qa="signup-button"]');
+      
     }
-  
-    // Navigation vers la page de login
+ 
     async goto() {
       await this.page.goto('https://automationexercise.com/login');
       await expect(this.emailInput).toBeVisible();
+      await expect(this.emailSignup).toBeVisible();
     }
     async acceptCockies(){
       await this.page.locator('button.fc-cta-consent:has-text("Consent")').click({ timeout: 3000 }).catch(() => {});
@@ -35,6 +43,12 @@ export class LoginAutoexePage {
       await this.loginButton.click();
     }
   
+    async signup(name: string, email: string){
+    
+      await this.NameSignup.fill(name);
+      await this.emailSignup.fill(email)
+      await this.signupButton.click();
+    }
     // Vérification du succès de la connexion
     async expectLoginSuccess() {
       await this.logoutLink.waitFor({ state: 'visible' });
@@ -45,5 +59,7 @@ export class LoginAutoexePage {
     async expectLoginFail() {
       await expect(this.loginErrorMessage).toBeVisible();
     }
+
+
   }
   
