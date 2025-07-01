@@ -1,0 +1,12 @@
+ 🛒 la catégorie choisit est bien :  Tops & Shirts
+⛳ Catégorie aléatoire choisie pour vérification dans le panier : Tops & Shirts
+🔍 Catégorie trouvée dans le panier : "Kids > Tops & Shirts"
+✅ Correspondance trouvée : "Kids > Tops & Shirts" contient "Tops & Shirts"
+✅ Un produit contenant la catégorie "Tops & Shirts" a été trouvé dans le panier.
+Voiçi les informations de card Infos ;  CardInfo {
+  nameOnCard: 'Aurore Clement',
+  cardNumber: '4591462872650',
+  cvc: '430',
+  expirationMonth: '03',
+  expirationYear: '2026'
+}
