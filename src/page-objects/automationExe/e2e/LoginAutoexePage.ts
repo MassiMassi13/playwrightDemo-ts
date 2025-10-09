@@ -40,8 +40,17 @@ export class LoginAutoexePage {
     async login(email: string, password: string) {
       await this.emailInput.fill(email);
       await this.passwordInput.fill(password);
-      await this.loginButton.click();
+      await this.loginButton.click({ timeout: 8000 });
+      // Attendre que l'URL change après la connexion (si la page redirige)
+      await this.page.waitForURL('https://automationexercise.com', { timeout: 10000 }); // Attendre jusqu'à 10 secondes pour que l'URL change
+
+      /*
+      // Attendre qu'un élément spécifique soit visible après la connexion
+      const welcomeMessage = this.page.locator('text=Welcome,'); // Par exemple un message de bienvenue
+      await expect(welcomeMessage).toBeVisible({ timeout: 10000 }); // Attendre jusqu'à 10 secondes pour que le message de bienvenue apparaisse
+      */
     }
+    
   
     async signup(name: string, email: string){
     
