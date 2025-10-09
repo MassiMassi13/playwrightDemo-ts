@@ -24,7 +24,7 @@ test(
     await loginAutoexePage.goto();
 
     await test.step("1. Saisir l'email et le mot de passe", async () => {
-      await loginAutoexePage.acceptCockies();
+      //await loginAutoexePage.acceptCockies();
       await loginAutoexePage.login(user.email, user.password);
       AllureUtils.attachJson("Email utilisateur", user.email);
       AllureUtils.attachJson("Password utilisateur", user.password);
@@ -60,7 +60,7 @@ test(
     await loginAutoexePage.goto();
 
     await test.step("1. Saisir l'email et un mauvais mot de passe", async () => {
-      await loginAutoexePage.acceptCockies();
+      //await loginAutoexePage.acceptCockies();
       await loginAutoexePage.login(user.email, "wrong-password");
       AllureUtils.attachJson("Email utilisateur", user.email);
       AllureUtils.attachJson("Password utilisé", "wrong-password");

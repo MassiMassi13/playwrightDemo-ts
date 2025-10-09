@@ -23,7 +23,7 @@ test("Ajouter un ou des produits au panier",
     await loginAutoexePage.goto();
 
     await test.step("Saisir le nom et l'adresse email puis clické sur signup", async () => {
-        await loginAutoexePage.acceptCockies();
+        //await loginAutoexePage.acceptCockies();
         await loginAutoexePage.login(user.email, user.password);
     });
     
