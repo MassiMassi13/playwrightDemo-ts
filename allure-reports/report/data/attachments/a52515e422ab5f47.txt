@@ -1,0 +1,20 @@
+📅 Le mois choisit est bien le :  April
+valeur récupérer :  [
+  locator('select[data-qa="country"]').locator('option').first(),
+  locator('select[data-qa="country"]').locator('option').nth(1),
+  locator('select[data-qa="country"]').locator('option').nth(2),
+  locator('select[data-qa="country"]').locator('option').nth(3),
+  locator('select[data-qa="country"]').locator('option').nth(4),
+  locator('select[data-qa="country"]').locator('option').nth(5),
+  locator('select[data-qa="country"]').locator('option').nth(6)
+]
+Les valeurs sont les suivantes :  [
+  'India',
+  'United States',
+  'Canada',
+  'Australia',
+  'Israel',
+  'New Zealand',
+  'Singapore'
+]
+🌍 Pays sélectionné aléatoirement : Australia
