@@ -1,0 +1,12 @@
+⛳ Catégories attendues dans le panier : []
+🔍 Catégorie trouvée dans le panier : "Women > Tops"
+⛳ Catégories attendues dans le panier : []
+✅ Le panier contient 2 produit(s)
+🔍 Catégorie trouvée dans le panier : "Women > Tops"
+🔍 Produit 1: Women > Tops
+🔍 Produit 2: Men > Tshirts
+✅ Tous les 2 produits ont des catégories valides
+la quantité du premier produit est de :  1
+la quantité du second produit est de :  1
+le prix du premier produit est de :  Rs. 500
+le prix du second produit est de :  Rs. 400
