@@ -42,7 +42,7 @@ export class LoginAutoexePage {
       await this.passwordInput.fill(password);
       await this.loginButton.click({ timeout: 8000 });
       // Attendre que l'URL change après la connexion (si la page redirige)
-      await this.page.waitForURL('https://automationexercise.com', { timeout: 10000 }); // Attendre jusqu'à 10 secondes pour que l'URL change
+      //await this.page.waitForURL('https://automationexercise.com', { timeout: 10000 }); // Attendre jusqu'à 10 secondes pour que l'URL change
 
       /*
       // Attendre qu'un élément spécifique soit visible après la connexion

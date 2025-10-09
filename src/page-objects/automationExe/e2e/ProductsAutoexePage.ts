@@ -94,41 +94,35 @@ export class ProductsAutoexePage {
     );
   }
 
-  async verifyCar2() {
-    // Si vous avez stocké les catégories des deux produits ajoutés
-    const expectedCategories = this.addedProductCategories; // Array de 2 catégories
+  async verifyCar2(): Promise<{ count: number; foundCategories: string[] }> {
+    const expectedCategories = this.addedProductCategories;
     console.log("⛳ Catégories attendues dans le panier :", expectedCategories);
 
-    const categoryElements = this.page.locator(
-      "tbody > tr > td.cart_description > p"
-    );
+    const categoryElements = this.page.locator("tbody > tr > td.cart_description > p");
     const count = await categoryElements.count();
     const foundCategories: string[] = [];
 
-    // Récupérer toutes les catégories dans le panier
     for (let i = 0; i < count; i++) {
       const categoryText = await categoryElements.nth(i).textContent();
+      if (categoryText) foundCategories.push(categoryText.trim());
       console.log(`🔍 Catégorie trouvée dans le panier : "${categoryText}"`);
-
-      if (categoryText) {
-        foundCategories.push(categoryText.trim());
-      }
-      return count;
     }
+
+    console.log("Nombre total de produits dans le panier :", count);
 
     // Vérifier que chaque catégorie attendue est présente
-    for (const expectedCat of expectedCategories) {
-      const isFound = foundCategories.some((found) =>
-        found.toLowerCase().includes(expectedCat.toLowerCase())
+    expectedCategories.forEach((expectedCat) => {
+      const isFound = foundCategories.some(
+        (found) => found.toLowerCase().includes(expectedCat.toLowerCase())
       );
-
       expect(isFound).toBeTruthy();
       console.log(`✅ Catégorie "${expectedCat}" trouvée dans le panier`);
-    }
+    });
 
-    console.log(
-      `✅ Les ${expectedCategories.length} produits attendus sont présents dans le panier.`
-    );
+    console.log(`✅ Les ${expectedCategories.length} produits attendus sont présents dans le panier.`);
+
+    // Retourner un objet avec toutes les infos
+    return { count, foundCategories };
   }
 
   async verifyCartWithNumberOfProduct() {

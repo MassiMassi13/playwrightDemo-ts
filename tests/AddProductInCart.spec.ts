@@ -48,8 +48,9 @@ test("Ajouter un ou des produits au panier",
     });
 
     await test.step("Vérifiez que les deux produits sont ajoutés au panier ", async () => {
+        const { count, foundCategories } = await productsAutoexePage.verifyCar2();
         await productsAutoexePage.verifyCar2();
-        await AllureUtils.attachJson("Les deux produits sont ajoutés au panier : ", productsAutoexePage.verifyCar2());
+        await AllureUtils.attachJson("Le Nombre de Produits dans le panier est : ", { count, foundCategories });
         await productsAutoexePage.verifyCartWithNumberOfProduct();
       
     });
