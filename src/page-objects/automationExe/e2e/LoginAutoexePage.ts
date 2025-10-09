@@ -32,7 +32,7 @@ export class LoginAutoexePage {
       await expect(this.emailSignup).toBeVisible();
     }
     async acceptCockies(){
-      await this.page.locator('button.fc-cta-consent:has-text("Consent")').click({ timeout: 3000 }).catch(() => {});
+      await this.page.locator('button.fc-cta-consent:has-text("Consent")').click({ timeout: 3000 });
 
     }
   

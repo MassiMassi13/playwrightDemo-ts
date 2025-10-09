@@ -1,6 +1,7 @@
 import { test } from "../fixtures/CreateAcountFixture";
 import { AllureUtils } from "../src/utils/allure.utils";
 import { DataFactory } from "../src/utils/DataFactory";
+import {autoDismissPopup } from "../src/utils/popupHandler.utils"; // Updated import for popupHandler
 
 test(
   "Acceder à la page de connexion / inscription",
@@ -26,10 +27,13 @@ test(
     AllureUtils.setSeverity("critical");
 
     await loginAutoexePage.goto();
-
+    
     await test.step("Saisir le nom et l'adresse email puis clické sur signup", async () => {
 
-      await page.getByRole('button', { name: 'Consent' }).click();
+      
+      await page.pause();
+      //await loginAutoexePage.acceptCockies();
+      await autoDismissPopup(page, 'button', 'Consent');
       const name = DataFactory.getLastName();
       const email = DataFactory.getDirectorEmail();
       AllureUtils.attachJson("Name : ", name);

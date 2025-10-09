@@ -6,7 +6,15 @@ import { allure } from "allure-playwright";
 import { DataFactoryPhysicalMember } from "../src/utils/DataFactoryPhysicalMemberFirst";
 import { DataFactory } from "../src/utils/DataFactory";
 
-test("Connexion utilisateur valide", { tag: ["@login", "@favorite"] , annotation:[{type:"Jira Story", description:"https://www.atlassian.net/jira/software/projects/scrum/boards/1/backlog?selectedIssue=SCRUM-1"}]} , async ({ page }) => {
+test("Connexion utilisateur valide", { tag: ["@login", "@favorite"] , 
+  annotation:[{
+    type:"Jira Story",
+     description:"https://www.atlassian.net/jira/software/projects/scrum/boards/1/backlog?selectedIssue=SCRUM-1"},
+      {
+        type: "Test Case",
+        description: "TC-001: Vérifier la connexion avec identifiants valides"
+      }
+  ]} , async ({ page }) => {
   AllureUtils.initSuite("Automation Project", "OrangeHrm", "Authentification");
   AllureUtils.setDescription("Ce test vérifie la connexion avec des identifiants valides.");
   AllureUtils.setSeverity("critical");
