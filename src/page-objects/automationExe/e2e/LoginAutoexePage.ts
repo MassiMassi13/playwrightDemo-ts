@@ -31,10 +31,10 @@ export class LoginAutoexePage {
       await expect(this.emailInput).toBeVisible();
       await expect(this.emailSignup).toBeVisible();
     }
-    async acceptCockies(){
-      await this.page.locator('button.fc-cta-consent:has-text("Consent")').click({ timeout: 8000 });
+    // async acceptCockies(){
+    //   await this.page.locator('button.fc-cta-consent:has-text("Consent")').click({ timeout: 8000 });
 
-    }
+    // }
   
     // Connexion avec les identifiants
     async login(email: string, password: string) {
