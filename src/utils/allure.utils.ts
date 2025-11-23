@@ -131,6 +131,7 @@ export class AllureUtils {
    */
   static setFeature(featureName: string) {
     feature(featureName);
+   
   }
 
   /**
