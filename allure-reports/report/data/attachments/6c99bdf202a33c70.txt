@@ -1,7 +1,0 @@
-{ gender: 'Female', civility: 'Madame', firstName: 'Jamie' }
-Nom généré Par la lib fakers : Greenholt
-🚀 Employé généré :  - Female 
-🔹 Status : Full-Time Permanent 
-🔹 Include : Past Employees Only 
-🔹 Job Title : Software Engineer 
-🔹 Sub Unit : Quality Assurance
